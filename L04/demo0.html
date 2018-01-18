@@ -3,7 +3,7 @@
 
   <head>
     <meta charset=utf-8>
-    <title>demo0</title>
+    <title>demo1</title>
     <style>
 	     body { margin: 0; }
     </style>
@@ -42,17 +42,23 @@
 
 				// https://threejs.org/docs/index.html#api/objects/Mesh
 				cube = new THREE.Mesh( geometry, material );
+        cube.position.x=2;
+
 				scene.add( cube );
 
 				camera.position.z = 5;
 			}
 
+      var counter=0;
+
 			function animate() {
-				requestAnimationFrame( animate );
-				cube.rotation.x += 0.005;
-				cube.rotation.y += 0.001;
+        counter++;
+        cube.position.x = (counter%100)/50.0;
+				//cube.rotation.x += 0.005;
+				cube.rotation.z += 0.1;
 
 				renderer.render( scene, camera );
+        requestAnimationFrame( animate );
 			}
 
 
