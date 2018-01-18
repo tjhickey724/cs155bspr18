@@ -5,7 +5,7 @@
     <meta charset=utf-8>
     <title>demo1</title>
     <style>
-	     body { margin: 0; }
+       body { margin: 0; }
     </style>
   </head>
 
@@ -15,51 +15,51 @@
       // Our Javascript will go here.
       console.log("Hey,  we're running the script!!")
       // We declare the "global" variables here
-			var scene = new THREE.Scene();
-			var camera = new THREE.PerspectiveCamera(
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(
                                 75,
                                 window.innerWidth / window.innerHeight,
                                 0.1,
                                 1000 );
-			var renderer = new THREE.WebGLRenderer();
-			var cube;
+      var renderer = new THREE.WebGLRenderer();
+      var cube;
 
-			init();
-			animate();
+      init();
+      animate();
 
-			// this initializes the scene, camera, and renderer
-			function init(){
+      // this initializes the scene, camera, and renderer
+      function init(){
 
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.body.appendChild( renderer.domElement );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.body.appendChild( renderer.domElement );
 
-				// https://threejs.org/docs/index.html#api/geometries/BoxGeometry
-				var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+        // https://threejs.org/docs/index.html#api/geometries/BoxGeometry
+        var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 
-				// https://threejs.org/docs/index.html#api/materials/MeshBasicMaterial
-				var material = new THREE.MeshBasicMaterial(
+        // https://threejs.org/docs/index.html#api/materials/MeshBasicMaterial
+        var material = new THREE.MeshBasicMaterial(
                                         {wireframe:true, color: 0x00ff00 } );
 
-				// https://threejs.org/docs/index.html#api/objects/Mesh
-				cube = new THREE.Mesh( geometry, material );
+        // https://threejs.org/docs/index.html#api/objects/Mesh
+        cube = new THREE.Mesh( geometry, material );
         cube.position.x=2;
 
-				scene.add( cube );
+        scene.add( cube );
 
-				camera.position.z = 5;
-			}
+        camera.position.z = 5;
+      }
 
       var counter=0;
 
-			function animate() {
+      function animate() {
         counter++;
         cube.position.x = (counter%100)/50.0;
-				//cube.rotation.x += 0.005;
-				cube.rotation.z += 0.1;
+        //cube.rotation.x += 0.005;
+        cube.rotation.z += 0.1;
 
-				renderer.render( scene, camera );
+        renderer.render( scene, camera );
         requestAnimationFrame( animate );
-			}
+      }
 
 
     </script>
