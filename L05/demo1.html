@@ -38,7 +38,7 @@
         document.body.appendChild( renderer.domElement );
 
         // https://threejs.org/docs/index.html#api/geometries/BoxGeometry
-        var box_geometry = new THREE.BoxGeometry( 1, 1, 1 );
+        var box_geometry = new THREE.PlaneGeometry( 10, 10, 10 );
         //var geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
         //var geometry = new THREE.CylinderGeometry( 5, 5, 20, 32 );
         //var geometry = new THREE.ConeGeometry( 1, 2, 32 );
@@ -48,7 +48,9 @@
 
         // https://threejs.org/docs/index.html#api/objects/Mesh
         cube = new THREE.Mesh( box_geometry, box_material );
-        cube.position.x=2;
+        //cube.position.x=2;
+        cube.position.y = -4;
+        cube.rotateX(-Math.PI/2);
         scene.add( cube );
 
         var cyl_geometry = new THREE.CylinderGeometry( 1, 1, 2, 32 );
