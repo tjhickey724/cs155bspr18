@@ -43,8 +43,8 @@
         //var geometry = new THREE.CylinderGeometry( 5, 5, 20, 32 );
         //var geometry = new THREE.ConeGeometry( 1, 2, 32 );
         // https://threejs.org/docs/index.html#api/materials/MeshBasicMaterial
-        var box_material = new THREE.MeshBasicMaterial(
-                                        {wireframe:true, color: 0x00ff00 } );
+        var box_material = new THREE.MeshLambertMaterial(
+                                        {color: 0x00ff00 } );
 
         // https://threejs.org/docs/index.html#api/objects/Mesh
         cube = new THREE.Mesh( box_geometry, box_material );
@@ -52,13 +52,18 @@
         scene.add( cube );
 
         var cyl_geometry = new THREE.CylinderGeometry( 1, 1, 2, 32 );
-        var cyl_material = new THREE.MeshBasicMaterial(
-                                        {wireframe:true, color: 0x0000ff } );
+        var cyl_material = new THREE.MeshLambertMaterial(
+                                        {color: 0xffffff } );
         var cyl = new THREE.Mesh(cyl_geometry,cyl_material);
         cyl.position.x = -2;
+        cyl.rotateZ(Math.PI/4);
         scene.add(cyl);
 
         camera.position.z = 10;
+
+        var spotLight = new THREE.SpotLight( 0xffffff );
+        spotLight.position.set( -4, 6, 2 );
+        scene.add( spotLight );
       }
 
       var counter=0;
