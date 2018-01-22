@@ -38,28 +38,36 @@
         document.body.appendChild( renderer.domElement );
 
         // https://threejs.org/docs/index.html#api/geometries/BoxGeometry
-        var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-
+        var box_geometry = new THREE.BoxGeometry( 1, 1, 1 );
+        //var geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
+        //var geometry = new THREE.CylinderGeometry( 5, 5, 20, 32 );
+        //var geometry = new THREE.ConeGeometry( 1, 2, 32 );
         // https://threejs.org/docs/index.html#api/materials/MeshBasicMaterial
-        var material = new THREE.MeshBasicMaterial(
+        var box_material = new THREE.MeshBasicMaterial(
                                         {wireframe:true, color: 0x00ff00 } );
 
         // https://threejs.org/docs/index.html#api/objects/Mesh
-        cube = new THREE.Mesh( geometry, material );
+        cube = new THREE.Mesh( box_geometry, box_material );
         cube.position.x=2;
-
         scene.add( cube );
 
-        camera.position.z = 5;
+        var cyl_geometry = new THREE.CylinderGeometry( 1, 1, 2, 32 );
+        var cyl_material = new THREE.MeshBasicMaterial(
+                                        {wireframe:true, color: 0x0000ff } );
+        var cyl = new THREE.Mesh(cyl_geometry,cyl_material);
+        cyl.position.x = -2;
+        scene.add(cyl);
+
+        camera.position.z = 10;
       }
 
       var counter=0;
 
       function animate() {
         counter++;
-        cube.position.x = (counter%100)/50.0;
+        //cube.position.x = (counter%100)/50.0;
         //cube.rotation.x += 0.005;
-        cube.rotation.z += 0.1;
+        cube.rotation.z += 0.01;
 
         renderer.render( scene, camera );
         requestAnimationFrame( animate );
