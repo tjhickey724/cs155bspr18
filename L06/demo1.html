@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <!--
+  This demo shows how we can add lights and Lambertian materials
+  to a simple ThreeJS program and then enable shadows!
+  -->
+
+  <head>
+    <meta charset=utf-8>
+    <title>demo1</title>
+    <style>
+       body { margin: 0; }
+    </style>
+  </head>
+
+  <body>
+    <script src="../three.js"></script>
+    <script>
+      // Our Javascript will go here.
+      console.log("Hey,  we're running the script!!")
+      // We declare the "global" variables here
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(
+                                75,
+                                window.innerWidth / window.innerHeight,
+                                0.1,
+                                1000 );
+      var renderer = new THREE.WebGLRenderer();
+      var cube;
+
+      init();
+      animate();
+
+      // this initializes the scene, camera, and renderer
+      function init(){
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.body.appendChild( renderer.domElement );
+
+        // https://threejs.org/docs/index.html#api/geometries/BoxGeometry
+        var box_geometry = new THREE.PlaneGeometry( 20, 10, 40 );
+        //var geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
+        //var geometry = new THREE.CylinderGeometry( 5, 5, 20, 32 );
+        //var geometry = new THREE.ConeGeometry( 1, 2, 32 );
+        // https://threejs.org/docs/index.html#api/materials/MeshBasicMaterial
+        var box_material = new THREE.MeshLambertMaterial(
+                                        {color: 0x00ff00 } );
+        var texture = new THREE.TextureLoader().load( 'gras364.jpg' );
+        var cube_material = new THREE.MeshLambertMaterial(
+            { color: 0xaaaaaa,  map: texture, side:THREE.DoubleSide} );
+
+        // https://threejs.org/docs/index.html#api/objects/Mesh
+        cube = new THREE.Mesh( box_geometry, cube_material );
+        //cube.position.x=2;
+        cube.position.y = -4;
+        cube.rotateX(-Math.PI/2);
+        scene.add( cube );
+
+        var cyl_geometry = new THREE.CylinderGeometry( 1, 1, 2, 32 );
+        var cyl_material = new THREE.MeshLambertMaterial(
+                                        {color: 0xffffff } );
+        var cyl = new THREE.Mesh(cyl_geometry,cyl_material);
+        cyl.position.x = -2;
+        cyl.rotateZ(Math.PI/4);
+        scene.add(cyl);
+
+        camera.position.z = 10;
+
+        var spotLight = new THREE.SpotLight( 0xffffff );
+        spotLight.position.set( -4, 6, 2 );
+        scene.add( spotLight );
+      }
+
+      var counter=0;
+
+      function animate() {
+        counter++;
+        //cube.position.x = (counter%100)/50.0;
+        //cube.rotation.x += 0.005;
+        cube.rotation.z += 0.01;
+
+        renderer.render( scene, camera );
+        requestAnimationFrame( animate );
+      }
+
+
+    </script>
+  </body>
+
+</html>
