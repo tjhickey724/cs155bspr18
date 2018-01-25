@@ -29,6 +29,28 @@ that cast shadows!
 			renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 
+      var loader = new THREE.FontLoader();
+
+      loader.load( '/fonts/optimer_regular.typeface.json',
+      function ( font ) {
+
+        var textGeometry = new THREE.TextGeometry( 'Hello three.js!', {
+      		font: font,
+      		size: 1,
+      		height: 1,
+      		curveSegments: 12,
+      		bevelEnabled: true,
+      		bevelThickness: 10,
+      		bevelSize: 8,
+      		bevelSegments: 5
+      	} );
+
+        var textMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
+        var textMesh = new THREE.Mesh( textGeometry, textMaterial );
+
+        scene.add(textMesh);
+      } );
+
 
 			var cubeGeometry = new THREE.BoxGeometry( 0.5, 1.5, 3 );
 			var cubeMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
@@ -60,7 +82,7 @@ that cast shadows!
 
 			// creating a textured plane which receives shadows
 			var planeGeometry = new THREE.PlaneGeometry( 20, 20, 128 );
-			var texture = new THREE.TextureLoader().load( 'crate.gif' );
+			var texture = new THREE.TextureLoader().load( '../images/crate.gif' );
 			var planeMaterial = new THREE.MeshLambertMaterial( { color: 0xaaaaaa,  map: texture ,side:THREE.DoubleSide} );
 			planeMesh = new THREE.Mesh( planeGeometry, planeMaterial );
 			scene.add(planeMesh);
@@ -94,7 +116,7 @@ that cast shadows!
 			light2.shadow.camera.near = 0.5;       // default
 			light2.shadow.camera.far = 500      // default
 
-			camera.position.z = 15;
+			camera.position.z = 150;
 			camera.position.y=15;
 			camera.lookAt(0,0,0);
 			var counter = 0;
