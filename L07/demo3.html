@@ -48,7 +48,7 @@ that cast shadows!
         var textMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
         var textMesh = new THREE.Mesh( textGeometry, textMaterial );
 
-        scene.add(textMesh);
+        //scene.add(textMesh);
       } );
 
 
@@ -116,7 +116,7 @@ that cast shadows!
 			light2.shadow.camera.near = 0.5;       // default
 			light2.shadow.camera.far = 500      // default
 
-			camera.position.z = 150;
+			camera.position.z = 15;
 			camera.position.y=15;
 			camera.lookAt(0,0,0);
 			var counter = 0;
@@ -134,6 +134,9 @@ that cast shadows!
 
 				counter++;
 				planeMesh.position.y = 1*Math.sin(counter*0.01);
+
+        var p = 10*(1+Math.sin(counter*2*Math.PI/360))/2
+        camera.rotation.z = p*0.1;
 				renderer.render( scene, camera );
 			}
 			animate();
