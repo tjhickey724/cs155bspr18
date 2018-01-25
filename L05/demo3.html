@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!--
+This is a simple example that shows how to create scenes with textured objects
+that cast shadows!
+-->
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>demo3</title>
+		<style>
+			body { margin: 0;}
+			canvas { width: 100%; height: 100%;}
+		</style>
+	</head>
+	<body>
+		<script src="../three.js"></script>
+		<script>
+			// This is a scene with two lights casting shadows of a rotating cone
+			// on a gray plane
+			// from two lights
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			renderer.shadowMap.enabled = true;
+			renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+
+
+			var cubeGeometry = new THREE.BoxGeometry( 0.5, 1.5, 3 );
+			var cubeMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
+			var cubeMesh = new THREE.Mesh( cubeGeometry, cubeMaterial );
+			cubeMesh.position.x = -2;
+			cubeMesh.position.y = 3;
+			cubeMesh.castShadow = true;
+			scene.add( cubeMesh );
+
+			// creating a red cone sitting 2 units above the origin
+			var coneGeometry = new THREE.ConeGeometry( 1,2, 32 );
+			//var geometry = new THREE.BoxBufferGeometry( 2, 2, 2);
+			//var material = new THREE.MeshBasicMaterial( { map: texture } );
+			var coneMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000} );
+
+			coneMesh = new THREE.Mesh( coneGeometry, coneMaterial );
+			/*
+			coneMesh.position.x = 2;
+			coneMesh.position.y = 2;
+			coneMesh.position.z = 5;
+			*/
+
+			coneMesh.translateX(2);
+			coneMesh.translateY(2);
+			coneMesh.translateZ(5);
+
+			coneMesh.castShadow = true;
+			scene.add( coneMesh );
+
+			// creating a textured plane which receives shadows
+			var planeGeometry = new THREE.PlaneGeometry( 20, 20, 128 );
+			var texture = new THREE.TextureLoader().load( 'crate.gif' );
+			var planeMaterial = new THREE.MeshLambertMaterial( { color: 0xaaaaaa,  map: texture ,side:THREE.DoubleSide} );
+			planeMesh = new THREE.Mesh( planeGeometry, planeMaterial );
+			scene.add(planeMesh);
+
+			planeMesh.position.x = 0;
+			planeMesh.position.y = 0;
+			planeMesh.position.z = 0;
+
+			planeMesh.rotation.x = -Math.PI/2;
+			planeMesh.receiveShadow = true;
+
+			var light = new THREE.SpotLight( 0xaaaaff );
+			light.position.set( 0, 10, 0 );
+			light.castShadow = true;
+     	scene.add( light );
+
+			//Set up shadow properties for the light
+			light.shadow.mapSize.width = 2048;  // default
+			light.shadow.mapSize.height = 2048; // default
+			light.shadow.camera.near = 0.5;       // default
+			light.shadow.camera.far = 500      // default
+
+			var light2 = new THREE.SpotLight( 0xffaaaa );
+			light2.position.set( -10, 10, 10 );
+			light2.castShadow = true;
+     	scene.add( light2 );
+
+			//Set up shadow properties for the light
+			light2.shadow.mapSize.width = 2048;  // default
+			light2.shadow.mapSize.height = 2048; // default
+			light2.shadow.camera.near = 0.5;       // default
+			light2.shadow.camera.far = 500      // default
+
+			camera.position.z = 15;
+			camera.position.y=15;
+			camera.lookAt(0,0,0);
+			var counter = 0;
+
+			function animate() {
+				requestAnimationFrame( animate );
+
+
+				cubeMesh.rotation.x += 0.1;
+				cubeMesh.rotation.z += 0.1;
+        //cubeMesh.rotateX(0.1);
+        //cubeMesh.rotateZ(0.1);
+
+
+				coneMesh.rotation.z += 0.1;
+
+				counter++;
+				planeMesh.position.y = 1*Math.sin(counter*0.01);
+				renderer.render( scene, camera );
+			}
+			animate();
+
+
+		</script>
+	</body>
+</html>
