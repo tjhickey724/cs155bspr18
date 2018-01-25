@@ -38,16 +38,19 @@
         document.body.appendChild( renderer.domElement );
 
         // https://threejs.org/docs/index.html#api/geometries/BoxGeometry
-        var box_geometry = new THREE.PlaneGeometry( 10, 10, 10 );
+        var box_geometry = new THREE.PlaneGeometry( 20, 10, 40 );
         //var geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
         //var geometry = new THREE.CylinderGeometry( 5, 5, 20, 32 );
         //var geometry = new THREE.ConeGeometry( 1, 2, 32 );
         // https://threejs.org/docs/index.html#api/materials/MeshBasicMaterial
         var box_material = new THREE.MeshLambertMaterial(
                                         {color: 0x00ff00 } );
+        var texture = new THREE.TextureLoader().load( 'gras364.jpg' );
+        var cube_material = new THREE.MeshLambertMaterial(
+            { color: 0xaaaaaa,  map: texture, side:THREE.DoubleSide} );
 
         // https://threejs.org/docs/index.html#api/objects/Mesh
-        cube = new THREE.Mesh( box_geometry, box_material );
+        cube = new THREE.Mesh( box_geometry, cube_material );
         //cube.position.x=2;
         cube.position.y = -4;
         cube.rotateX(-Math.PI/2);
