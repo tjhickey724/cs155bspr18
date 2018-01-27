@@ -5,9 +5,6 @@
 
 */
 
-	// This is a scene with two lights casting shadows of a rotating cone
-	// on a gray plane
-	// from two lights
 
 	console.log("In demo4!");
 
@@ -144,7 +141,10 @@
 	function initPlaneMesh(){
 		// creating a textured plane which receives shadows
 		var planeGeometry = new THREE.PlaneGeometry( 20, 20, 128 );
-		var texture = new THREE.TextureLoader().load( '../images/crate.gif' );
+		var texture = new THREE.TextureLoader().load( '../images/dogs.jpg' );
+		texture.wrapS = THREE.RepeatWrapping;
+		texture.wrapT = THREE.RepeatWrapping;
+		texture.repeat.set( 4, 4 );
 		var planeMaterial = new THREE.MeshLambertMaterial( { color: 0xaaaaaa,  map: texture ,side:THREE.DoubleSide} );
 		planeMesh = new THREE.Mesh( planeGeometry, planeMaterial );
 		planeMesh.position.y = -2;
@@ -202,21 +202,50 @@
 		}
 
 
-		/* here we make the camera move in a circle of radius 20
-			around the scene looking always at the coneMesh object
-			We also have it oscillate higher and lower
-		*/
+
 		//camera.rotation.z = p*0.1;
 		var angle = currentTime*0.001;
+		//revolveCamera(angle);
+		setCameraAngle1();
+
+
+		// reset the camera to look straight down
+
+
+		renderer.render( scene, camera );
+	}
+
+
+
+	/* here we make the camera move in a circle of radius 20
+		around the scene looking always at the coneMesh object
+		We also have it oscillate higher and lower
+	*/
+	function revolveCamera(angle){
 		camera.position.x = 20*Math.sin(angle);
 		camera.position.z = 20*Math.cos(angle);
 		camera.position.y = 10*(1+Math.cos(angle));
 		camera.lookAt(coneMesh.position);
-		// reset the camera to look straight down
+	}
+
+
+	function setCameraAngle1(){
 		camera.position.x=0;
 		camera.position.y=1;
 		camera.position.z=10;
 		camera.lookAt(0,0,0);
+	}
 
-		renderer.render( scene, camera );
+	function setCameraAngle2(){
+		camera.position.x=0;
+		camera.position.y=10;
+		camera.position.z=0;
+		camera.lookAt(0,0,0);
+	}
+
+	function setCameraAngle3(){
+		camera.position.x=0;
+		camera.position.y=4;
+		camera.position.z=30;
+		camera.lookAt(0,4,0);
 	}
