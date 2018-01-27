@@ -30,25 +30,28 @@ that cast shadows!
 
 
       var loader = new THREE.FontLoader();
+			var textMesh;
 
-      loader.load( '/fonts/optimer_regular.typeface.json',
+      loader.load( '/fonts/helvetiker_regular.typeface.json',
       function ( font ) {
 
-        var textGeometry = new THREE.TextGeometry( 'Hello three.js!', {
+        var textGeometry = new THREE.TextGeometry( 'Hello World!!', {
       		font: font,
       		size: 1,
-      		height: 1,
+      		height: 0.2,
       		curveSegments: 12,
       		bevelEnabled: true,
-      		bevelThickness: 10,
-      		bevelSize: 8,
+      		bevelThickness: 0.01,
+      		bevelSize: 0.08,
       		bevelSegments: 5
       	} );
 
         var textMaterial = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
-        var textMesh = new THREE.Mesh( textGeometry, textMaterial );
+        textMesh = new THREE.Mesh( textGeometry, textMaterial );
+				textMesh.castShadow = true;
+        scene.add(textMesh);
 
-        //scene.add(textMesh);
+				console.log("added textMesh to scene");
       } );
 
 
@@ -116,8 +119,8 @@ that cast shadows!
 			light2.shadow.camera.near = 0.5;       // default
 			light2.shadow.camera.far = 500      // default
 
-			camera.position.z = 15;
-			camera.position.y=15;
+			camera.position.z = 20;
+			camera.position.y=4;
 			camera.lookAt(0,0,0);
 			var counter = 0;
 
@@ -127,20 +130,35 @@ that cast shadows!
         var currentTime = (new Date()).getTime();
 
 
-				//cubeMesh.rotation.x += 0.01;
-				//cubeMesh.rotation.z += 0.1;
-        cubeMesh.rotateX(0.01);
-        cubeMesh.rotateY(0.1);
+				cubeMesh.rotation.x += 0.01;
+				cubeMesh.rotation.z += 0.1;
+        //cubeMesh.rotateX(0.01);
+        //cubeMesh.rotateY(0.1);
 
-				coneMesh.rotation.z += 0.1;
+				//coneMesh.rotation.z += 0.1;
         counter = currentTime;
-				//counter++;
-				planeMesh.position.y = 1*Math.sin(counter*0.01);
 
-        var p = 10*(1+Math.sin(counter*2*Math.PI/3600))/2
+				//counter++;
+				//coneMesh.position.x = 1 + 4*Math.sin(counter*0.001);
+
+				textMesh.translateX(3.5);
+				textMesh.rotateY(-0.01);
+				textMesh.translateX(-3.5);
+
+				/* here we make the camera move in a circle of radius 20
+					around the scene looking always at the coneMesh object
+					We also have it oscillate higher and lower
+				*/
         //camera.rotation.z = p*0.1;
+				camera.position.x = 20*Math.sin(counter*0.001);
+				camera.position.z = 20*Math.cos(counter*0.001);
+				camera.position.y = 10*(1+Math.cos(counter*0.001));
+				camera.lookAt(coneMesh.position);
+
 				renderer.render( scene, camera );
 			}
+
+
 			animate();
 
 
