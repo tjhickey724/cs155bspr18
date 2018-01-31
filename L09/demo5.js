@@ -12,12 +12,14 @@
 	var controls = new function() {
 			this.rotationX = 0.01;
 			this.rotationZ = 0.1;
+      this.textRotate = 0.0;
 	}
 	var gui = new dat.GUI();
 	gui.add(controls, 'rotationX', -0.1, 0.1);
 	gui.add(controls, 'rotationZ', -0.1, 0.1);
+  gui.add(controls, 'textRotate', -0.5, 0.5);
 
-		console.dir([controls, controls.rotationX, controls.rotationZ]);
+		//console.dir([controls, controls.rotationX, controls.rotationZ]);
 
 
 	// First we declare the variables that hold the objects we need
@@ -205,14 +207,14 @@
 		var currentTime = (new Date()).getTime();
 
 		// we make the cube rotate around two axes
-		cubeMesh.rotation.x += controls.rotationX; 
+		cubeMesh.rotation.x += controls.rotationX;
 		cubeMesh.rotation.z += controls.rotationZ;
 
 		// when the textMesh is added to the scene
 		// we rotate it around its middle
 		if (textMesh){
 			textMesh.translateX(4);
-			textMesh.rotateY(-0.01);
+			textMesh.rotateY(controls.textRotate);
 			textMesh.translateX(-4);
 		}
 
