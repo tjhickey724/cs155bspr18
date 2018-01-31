@@ -71,9 +71,10 @@
 	*/
 	function initTextMesh(){
 		var loader = new THREE.FontLoader();
+    console.log("preparing to load the font");
 		loader.load( '/fonts/helvetiker_regular.typeface.json',
 								 createTextMesh);
-		console.log("preparing to load the font");
+		console.log("left loader.load");
 
 	}
 
@@ -83,6 +84,7 @@
 		the scene.
 	*/
 	function createTextMesh(font) {
+    console.log("calling createTextMesh");
 		var textGeometry =
 			new THREE.TextGeometry( 'Hello World !',
 					{
@@ -144,8 +146,10 @@
 		var texture = new THREE.TextureLoader().load( '../images/dogs.jpg' );
 		texture.wrapS = THREE.RepeatWrapping;
 		texture.wrapT = THREE.RepeatWrapping;
-		texture.repeat.set( 4, 4 );
-		var planeMaterial = new THREE.MeshLambertMaterial( { color: 0xaaaaaa,  map: texture ,side:THREE.DoubleSide} );
+		texture.repeat.set( 5,0.5 );
+		var planeMaterial =
+    new THREE.MeshLambertMaterial(
+      { color: 0xaaaaaa,  map: texture ,side:THREE.DoubleSide} );
 		planeMesh = new THREE.Mesh( planeGeometry, planeMaterial );
 		planeMesh.position.y = -2;
 		scene.add(planeMesh);
@@ -196,9 +200,9 @@
 		// when the textMesh is added to the scene
 		// we rotate it around its middle
 		if (textMesh){
-			textMesh.translateX(4);
+			textMesh.translateX(8);
 			textMesh.rotateY(-0.01);
-			textMesh.translateX(-4);
+			textMesh.translateX(-8);
 		}
 
 
