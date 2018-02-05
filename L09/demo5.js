@@ -9,15 +9,22 @@
 	console.log("In demo4!");
 
 	// here we define some controls to interact with the animation ...
-	var controls = new function() {
+  var Controller =  function() {
 			this.rotationX = 0.01;
 			this.rotationZ = 0.1;
+      this.textRotate = 0.0;
+      this.camera = "default";
 	}
+
+  var controls = new Controller();
+
 	var gui = new dat.GUI();
 	gui.add(controls, 'rotationX', -0.1, 0.1);
 	gui.add(controls, 'rotationZ', -0.1, 0.1);
+  gui.add(controls, 'textRotate', -0.5, 0.5);
+  gui.add(controls, 'camera',['camera1','revolve','default']);
 
-		console.dir([controls, controls.rotationX, controls.rotationZ]);
+		//console.dir([controls, controls.rotationX, controls.rotationZ]);
 
 
 	// First we declare the variables that hold the objects we need
@@ -98,7 +105,7 @@
 	*/
 	function createTextMesh(font) {
 		var textGeometry =
-			new THREE.TextGeometry( 'Hello World !',
+			new THREE.TextGeometry( controls.text,
 					{
 						font: font,
 						size: 1,
@@ -174,8 +181,8 @@
 		light1.position.set( 0, 10, 0 );
 		light1.castShadow = true;
 		//Set up shadow properties for the light
-		light1.shadow.mapSize.width = 2048;  // default
-		light1.shadow.mapSize.height = 2048; // default
+		light1.shadow.mapSize.width = 128;  // default
+		light1.shadow.mapSize.height = 128; // default
 		light1.shadow.camera.near = 0.5;       // default
 		light1.shadow.camera.far = 500      // default
 		// add it to the scenes
@@ -205,14 +212,14 @@
 		var currentTime = (new Date()).getTime();
 
 		// we make the cube rotate around two axes
-		cubeMesh.rotation.x += controls.rotationX; 
+		cubeMesh.rotation.x += controls.rotationX;
 		cubeMesh.rotation.z += controls.rotationZ;
 
 		// when the textMesh is added to the scene
 		// we rotate it around its middle
 		if (textMesh){
 			textMesh.translateX(4);
-			textMesh.rotateY(-0.01);
+			textMesh.rotateY(controls.textRotate);
 			textMesh.translateX(-4);
 		}
 
@@ -221,7 +228,12 @@
 		//camera.rotation.z = p*0.1;
 		var angle = currentTime*0.001;
 		//revolveCamera(angle);
-		setCameraAngle1();
+    switch(controls.camera){
+      case 'camera1': setCameraAngle1(); break;
+      case 'revolve': revolveCamera(0.1);break;
+      case 'default': setCameraAngle2(); break;
+    }
+
 
 
 		// reset the camera to look straight down
