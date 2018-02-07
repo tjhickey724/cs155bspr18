@@ -123,14 +123,14 @@
 
 	function initSuzanneOBJ(){
 		var loader = new THREE.OBJLoader();
-		loader.load("../models/suzanne.obj",
+		loader.load("../models/millenium-falcon.obj",
 					function ( obj) {
 						console.log("loading obj file");
 						obj.scale.x=1;
 						obj.scale.y=1;
 						obj.scale.z=1;
 						obj.position.y = 2;
-						obj.position.x = -2;
+						obj.position.z = 0;
 
 						scene.add(obj);
 						obj.castShadow = true;
