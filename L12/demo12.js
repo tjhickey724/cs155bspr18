@@ -123,7 +123,7 @@
 
 	function initSuzanneOBJ(){
 		var loader = new THREE.OBJLoader();
-		loader.load("../models/suzanne.obj",
+		loader.load("../models/dogplane.obj",
 					function ( obj) {
 						console.log("loading obj file");
 						obj.scale.x=1;
@@ -198,7 +198,8 @@
 
 
 	function initCubeMesh(){
-		var cubeGeometry = new THREE.BoxGeometry( 100, 100, 100 );
+		//var cubeGeometry = new THREE.BoxGeometry( 100, 100, 100 );
+		var cubeGeometry = new THREE.BoxGeometry( 2, 2, 2 );
 		var texture = new THREE.TextureLoader().load( '../images/dogs.jpg' );
 		texture.wrapS = THREE.RepeatWrapping;
 		texture.wrapT = THREE.RepeatWrapping;
