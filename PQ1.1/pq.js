@@ -156,7 +156,7 @@ Practice Quiz 1 solution
 			// creating a textured plane which receives shadows
 
 			var geometry = new THREE.PlaneGeometry( 1,1, 128 );
-			var texture = new THREE.TextureLoader().load( '../images/'+image );
+			var texture = new THREE.TextureLoader().load(image );
 			texture.wrapS = THREE.RepeatWrapping;
 			texture.wrapT = THREE.RepeatWrapping;
 			texture.repeat.set( s, t );

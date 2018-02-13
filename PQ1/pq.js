@@ -32,56 +32,17 @@ Practice Quiz 1 solution
 
 			var light2 = addLight(0xffffff);
 			light2.position.set(10,30,30)
-
-			//var ambient = new THREE.AmbientLight(0xffffff,0.5);
-			//scene.add(ambient);
 			//initLight2();
 			camera = addCamera();
-
-			// first we place the camera and lights
 			camera.position.set(0,20,50);
-			camera.lookAt(0,20,0);
+			camera.lookAt(0,10,0)
+
 
 
 			// next we make the floor and walls
 			var floor = addPlaneMesh(1,1,'sky.jpg');
 			floor.scale.set(100,100,1);
-			//floor.position.set(0,-10,0);
 			floor.rotateX(Math.PI/2);
-
-
-			//var skyB = addPlaneMesh(1,1,'sky.jpg');
-			//skyB.scale.set(160,80,1);
-			//skyB.translateZ(-40);
-			//skyB.translateY(40);
-
-
-			var cone1 = addConeMesh(0xff0000);
-			cone1.scale.set(4,40,4);
-			cone1.position.set(-20,20,0);
-			cone1.receiveShadow = true;
-
-			var cone2 = addConeMesh(0x00ff00);
-			cone2.scale.set(4,40,4);
-			cone2.position.set(20,20,0);
-
-			var cone3 = addConeMesh(0x0000ff);
-			cone3.scale.set(4,40,4);
-			cone3.position.set(0,20,-10);
-
-			var box1 = addBoxMesh(0xffff00);
-			box1.scale.set(50,2,30);
-			box1.translateY(40);
-			box1.translateZ(-10);
-
-			var ring = addTorusMesh(0x00ffff);
-			ring.scale.set(10,10,10);
-			ring.rotateX(-Math.PI/2);
-			ring.position.set(-20,10,0);
-			ring.receiveShadow = true;
-
-
-
 
 
 	}
@@ -195,7 +156,7 @@ Practice Quiz 1 solution
 			// creating a textured plane which receives shadows
 
 			var geometry = new THREE.PlaneGeometry( 1,1, 128 );
-			var texture = new THREE.TextureLoader().load(image );
+			var texture = new THREE.TextureLoader().load( '../images/'+image );
 			texture.wrapS = THREE.RepeatWrapping;
 			texture.wrapT = THREE.RepeatWrapping;
 			texture.repeat.set( s, t );

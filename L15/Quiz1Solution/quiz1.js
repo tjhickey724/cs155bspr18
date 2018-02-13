@@ -1,11 +1,10 @@
 
 /*
-Practice Quiz 1 solution
+Quiz 1
 */
 
-
-
-
+	// these are needed for the FlyController
+  var controls,clock;
 
 	// First we declare the variables that hold the objects we need
 	// in the animation code
@@ -26,61 +25,65 @@ Practice Quiz 1 solution
 
 			initScene();
 			initRenderer();
+			camera = addCamera();
+
+			initControls(camera);
+
+
+
 			var light1 = addLight(0xffffff);
-			light1.position.set(5,100,40)
+			light1.position.set(5,100,-40)
 
 
 			var light2 = addLight(0xffffff);
-			light2.position.set(10,30,30)
-
-			//var ambient = new THREE.AmbientLight(0xffffff,0.5);
-			//scene.add(ambient);
+			light2.position.set(10,40,30)
 			//initLight2();
-			camera = addCamera();
 
-			// first we place the camera and lights
-			camera.position.set(0,20,50);
-			camera.lookAt(0,20,0);
+			var ambient = new THREE.AmbientLight(0xffffff,0.5);
+			scene.add(ambient);
+
+
+
+			//camera.position.set(0,20,50);  camera.lookAt(0,10,0); // from in front
+			//camera.position.set(0,100,500);  camera.lookAt(0,100,0); // from far in front
+			//camera.position.set(0,100,0);  camera.lookAt(0,10,0); // from above
+			//camera.position.set(5,100,-40);  camera.lookAt(0,10,0); // from light2
+			//camera.position.set(10,40,30);  camera.lookAt(0,10,0); // from light 1
+
 
 
 			// next we make the floor and walls
-			var floor = addPlaneMesh(1,1,'sky.jpg');
-			floor.scale.set(100,100,1);
-			//floor.position.set(0,-10,0);
+			var floor = addPlaneMesh(3,3,'/images/tile.jpg');
+			floor.scale.set(150,60,1);
 			floor.rotateX(Math.PI/2);
+			floor.translateY(-10);
+
+			var sky = addPlaneMesh(1,1,'/images/sky.jpg');
+			sky.scale.set(600,600,1);
+			sky.position.set(0,100,-100);
+			sky.receiveShadow=false;
 
 
-			//var skyB = addPlaneMesh(1,1,'sky.jpg');
-			//skyB.scale.set(160,80,1);
-			//skyB.translateZ(-40);
-			//skyB.translateY(40);
+			var ring1 = addTorusMesh(0x0000ff);
+			ring1.scale.set(6,6,6);
+			ring1.position.set(-4,8,0);
 
+			var ring2 = addTorusMesh(0xff0000);
+			ring2.scale.set(6,6,6);
+			ring2.position.set(4,8,0);
+			ring2.rotateX(Math.PI/2);
 
-			var cone1 = addConeMesh(0xff0000);
-			cone1.scale.set(4,40,4);
-			cone1.position.set(-20,20,0);
-			cone1.receiveShadow = true;
+			var box1 = addBoxMesh(0x00aa00);
+			box1.scale.set(4,20,4);
+			box1.position.set(-30,10,0);
 
-			var cone2 = addConeMesh(0x00ff00);
-			cone2.scale.set(4,40,4);
-			cone2.position.set(20,20,0);
+			var box2 = addBoxMesh(0x00aa00);
+			box2.scale.set(4,20,4);
+			box2.position.set(30,10,0);
 
-			var cone3 = addConeMesh(0x0000ff);
-			cone3.scale.set(4,40,4);
-			cone3.position.set(0,20,-10);
-
-			var box1 = addBoxMesh(0xffff00);
-			box1.scale.set(50,2,30);
-			box1.translateY(40);
-			box1.translateZ(-10);
-
-			var ring = addTorusMesh(0x00ffff);
-			ring.scale.set(10,10,10);
-			ring.rotateX(-Math.PI/2);
-			ring.position.set(-20,10,0);
-			ring.receiveShadow = true;
-
-
+			var box3 = addBoxMesh(0xffff00);
+			box3.scale.set(56,4,4);
+			box3.position.set(0,18,0);
 
 
 
@@ -117,6 +120,21 @@ Practice Quiz 1 solution
 		camera.lookAt(0,10,0);
 		return camera;
 	}
+
+	function initControls(){
+		  //create a clock for the time-based animation ...
+			clock = new THREE.Clock();
+			clock.start();
+
+
+
+			controls = new THREE.FlyControls( camera );
+							controls.movementSpeed = 1000;
+							controls.domElement = renderer.domElement;
+							controls.rollSpeed = Math.PI / 24;
+							controls.autoForward = false;
+							controls.dragToLook = false;
+  }
 
 	function addLight(color){
 		var light = new THREE.PointLight(color);
@@ -208,7 +226,7 @@ Practice Quiz 1 solution
 		}
 
 		function addTorusMesh(color){
-			var geometry = new THREE.TorusGeometry( 1,0.1,32,32);
+			var geometry = new THREE.TorusGeometry( 1,0.2,32,32);
 			var material = new THREE.MeshLambertMaterial( { color: color} );
 			mesh = new THREE.Mesh( geometry, material );
 			mesh.castShadow = true;
@@ -226,7 +244,17 @@ Practice Quiz 1 solution
 
 
 
+
+
 	function animate() {
 		requestAnimationFrame( animate );
+
+		if (clock){
+		  var delta = clock.getDelta();
+
+		  controls.movementSpeed = 10;
+      controls.update( delta );
+    }
+
 		renderer.render( scene, camera );
 	}

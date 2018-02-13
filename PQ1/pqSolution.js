@@ -32,14 +32,11 @@ Practice Quiz 1 solution
 
 			var light2 = addLight(0xffffff);
 			light2.position.set(10,30,30)
-
-			//var ambient = new THREE.AmbientLight(0xffffff,0.5);
-			//scene.add(ambient);
 			//initLight2();
 			camera = addCamera();
 
 			// first we place the camera and lights
-			camera.position.set(0,20,50);
+			camera.position.set(10,30,30);
 			camera.lookAt(0,20,0);
 
 
@@ -195,7 +192,7 @@ Practice Quiz 1 solution
 			// creating a textured plane which receives shadows
 
 			var geometry = new THREE.PlaneGeometry( 1,1, 128 );
-			var texture = new THREE.TextureLoader().load(image );
+			var texture = new THREE.TextureLoader().load( '../images/'+image );
 			texture.wrapS = THREE.RepeatWrapping;
 			texture.wrapT = THREE.RepeatWrapping;
 			texture.repeat.set( s, t );
