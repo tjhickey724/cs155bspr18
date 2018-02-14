@@ -26,7 +26,6 @@ Quiz 1
 			initScene();
 			initRenderer();
 			camera = addCamera();
-
 			initControls(camera);
 
 
@@ -125,8 +124,6 @@ Quiz 1
 		  //create a clock for the time-based animation ...
 			clock = new THREE.Clock();
 			clock.start();
-
-
 
 			controls = new THREE.FlyControls( camera );
 							controls.movementSpeed = 1000;
@@ -250,10 +247,7 @@ Quiz 1
 		requestAnimationFrame( animate );
 
 		if (clock){
-		  var delta = clock.getDelta();
-
-		  controls.movementSpeed = 10;
-      controls.update( delta );
+		  var delta = clock.getDelta(); controls.movementSpeed = 10; controls.update( delta );
     }
 
 		renderer.render( scene, camera );
