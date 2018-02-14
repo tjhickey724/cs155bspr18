@@ -186,10 +186,7 @@ Practice Quiz 1 solution
 			texture.wrapS = THREE.RepeatWrapping;
 			texture.wrapT = THREE.RepeatWrapping;
 			texture.repeat.set( 3, 3 );
-			var material = new THREE.MeshLambertMaterial(
-        { color: 0xffffff,
-          map: texture ,
-          side:THREE.DoubleSide} );
+			var material = new THREE.MeshLambertMaterial( { color: 0xffffff,  map: texture ,side:THREE.DoubleSide} );
 			var mesh = new THREE.Mesh( geometry, material );
 			scene.add(mesh);
 			mesh.receiveShadow = true;
@@ -222,9 +219,18 @@ Practice Quiz 1 solution
 
 
 
-
+  // this approach might speed up your computer
+  // by having it do the rendering only every 100 frames...
+  var counter =0;
+  var frames = 100;
 
 	function animate() {
 		requestAnimationFrame( animate );
-		renderer.render( scene, camera );
+    if (counter >= frames){
+		    renderer.render( scene, camera );
+        counter = 0;
+        console.log("counting");
+    } else {
+      counter ++;
+    }
 	}
