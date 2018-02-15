@@ -10,6 +10,7 @@ Quiz 1
 	// in the animation code
 	var scene, camera, renderer;  // all threejs programs need these
 	var light1,light2;  // we have two lights
+  var ring2;
 
 	init(); // initialize these 9 variables
 	animate();  // start the animation loop!
@@ -67,7 +68,7 @@ Quiz 1
 			ring1.scale.set(6,6,6);
 			ring1.position.set(-4,8,0);
 
-			var ring2 = addTorusMesh(0xff0000);
+		  ring2 = addTorusMesh(0xff0000);
 			ring2.scale.set(6,6,6);
 			ring2.position.set(4,8,0);
 			ring2.rotateX(Math.PI/2);
@@ -127,7 +128,7 @@ Quiz 1
 			clock = new THREE.Clock();
 			clock.start();
 
-			window.addEventListener( 'keydown', keydown, false );
+			window.addEventListener( 'keydown', keydown);
   }
 
 	function keydown(event){
@@ -136,8 +137,10 @@ Quiz 1
 		switch (event.key){
 			case "w": camera.translateZ(-1); break;
 			case "s": camera.translateZ(1); break;
-			case "ArrowRight": camera.rotateY(-0.1); break;
-			case "ArrowLeft": camera.rotateY(0.1); break;
+      case "a": camera.position.x -= 1; break;
+      case "d": camera.position.x += 1; break;
+			case "ArrowRight": ring2.rotateX(-0.1); break;
+			case "ArrowLeft": ring2.rotateX(0.1); break;
 
 		}
 

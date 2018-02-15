@@ -6,7 +6,8 @@ Quiz 1
 	// these are needed for the FlyController
   var controls,clock;
 
-	controls = {zSpeed:0,xSpeed:0,ySpeed:0};
+	controls = {zSpeed:0,xSpeed:0,ySpeed:0,yRotSpeed:0};
+  ringControl = {zSpeed:0,xSpeed:0,ySpeed:0,yRotSpeed:0};
 
 	// First we declare the variables that hold the objects we need
 	// in the animation code
@@ -122,20 +123,34 @@ Quiz 1
   }
 
 	function keydown(event){
-		console.log("Keydown:"+event);
-		console.dir(event.key);
+		console.log("Keydown:"+event.key);
+		//console.dir(event);
 		switch (event.key){
-			case "w": controls.zSpeed=-1; break;
+			case "w": controls.zSpeed = -1;  break;
 			case "s": controls.zSpeed=1; break;
+      case "a": controls.xSpeed=-1; break;
+			case "d": controls.xSpeed=1; break;
+      case "r": controls.ySpeed=1; break;
+			case "f": controls.ySpeed=-1; break;
+      case "ArrowLeft": controls.yRotSpeed = 1; break;
+      case "ArrowRight": controls.yRotSpeed = -1; break;
 		}
+    if (event.shiftKey){
+    }
 	}
 
 	function keyup(event){
-		console.log("Keydown:"+event);
-		console.dir(event.key);
+		//console.log("Keydown:"+event.key);
+		//console.dir(event);
 		switch (event.key){
 			case "w": controls.zSpeed=0; break;
 			case "s": controls.zSpeed=0; break;
+      case "a": controls.xSpeed=0; break;
+			case "d": controls.xSpeed=0; break;
+      case "r": controls.ySpeed=0; break;
+			case "f": controls.ySpeed=0; break;
+      case "ArrowLeft": controls.yRotSpeed=0; break;
+			case "ArrowRight": controls.yRotSpeed=0; break;
 		}
 	}
 
@@ -254,7 +269,13 @@ Quiz 1
 
 
 		var delta = clock.getDelta();
-		camera.translateZ(controls.zSpeed*delta*10);
+		camera.translateX(controls.xSpeed*delta*10);
+    camera.translateY(controls.ySpeed*delta*10);
+    camera.translateZ(controls.zSpeed*delta*10);
+    camera.rotateY(controls.yRotSpeed*delta*0.5);
+
+    // if ring and camera are close enough
+    //  set ringControl.zSpeed = controls.zSpeed *0.8;
 		//controls.movementSpeed = 10; controls.update( delta );
 
 
