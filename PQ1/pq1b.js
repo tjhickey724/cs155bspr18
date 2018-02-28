@@ -22,6 +22,7 @@ Practice Quiz 1 solution
 	  To initialize the scene, we initialize each of its components
 	*/
 	function init(){
+      initPhysijs();
 			initScene();
 			initRenderer();
 			initLight1();
@@ -31,8 +32,10 @@ Practice Quiz 1 solution
 			var cyl1 = addCylinderMesh();
 
 			var ball = addSphereMesh();
-			ball.position.set(10,0,0);
-			ball.scale.set(0.5,0.5,0.5);
+      ball.__dirtyPosition = true;
+      ball.__dirtyRotation = true;
+			ball.position.set(5,20,0);
+			//ball.scale.set(0.5,0.5,0.5);
 
 			var box = addBoxMesh();
 			box.translateX(0);
@@ -43,6 +46,8 @@ Practice Quiz 1 solution
 			cone.rotateZ(-Math.PI/2);
 
 			var plane = addPlaneMesh();
+      plane.__dirtyPosition = true;
+      plane.__dirtyRotation = true;
 			plane.rotateX(Math.PI/2);
 			plane.translateZ(5);
 
@@ -51,9 +56,14 @@ Practice Quiz 1 solution
 	/* We don't do much here, but we could do more!
 	*/
 	function initScene(){
-		scene = new THREE.Scene();
+		//scene = new THREE.Scene();
+    scene = new Physijs.Scene();
 	}
 
+  function initPhysijs(){
+    Physijs.scripts.worker = '/js/physijs_worker.js';
+    Physijs.scripts.ammo = '/js/ammo.js';
+  }
 	/*
 		The renderer needs a size and the actual canvas we draw on
 		needs to be added to the body of the webpage. We also specify
@@ -111,6 +121,7 @@ Practice Quiz 1 solution
 			var geometry = new THREE.BoxGeometry( 2, 2, 2);
 			var material = new THREE.MeshLambertMaterial( { color: 0xff0000} );
 			mesh = new THREE.Mesh( geometry, material );
+      //mesh = new Physijs.BoxMesh( geometry, material,0 );
 			mesh.castShadow = true;
 			scene.add( mesh );
 			return mesh;
@@ -137,7 +148,8 @@ Practice Quiz 1 solution
 		function addSphereMesh(){
 			var geometry = new THREE.SphereGeometry( 4, 20, 20);
 			var material = new THREE.MeshLambertMaterial( { color: 0xffff00} );
-			var mesh = new THREE.Mesh( geometry, material );
+			//var mesh = new THREE.Mesh( geometry, material );
+      var mesh = new Physijs.SphereMesh( geometry, material );
 			mesh.castShadow = true;
 			scene.add( mesh );
 			return mesh;
@@ -152,7 +164,8 @@ Practice Quiz 1 solution
 			texture.wrapT = THREE.RepeatWrapping;
 			texture.repeat.set( 3, 3 );
 			var material = new THREE.MeshLambertMaterial( { color: 0xffffff,  map: texture ,side:THREE.DoubleSide} );
-			var mesh = new THREE.Mesh( geometry, material );
+			//var mesh = new THREE.Mesh( geometry, material );
+      var mesh = new Physijs.BoxMesh( geometry, material );
 			scene.add(mesh);
 			mesh.receiveShadow = true;
 			return mesh
@@ -169,6 +182,7 @@ Practice Quiz 1 solution
 
 
 	function animate() {
+    scene.simulate();
 		requestAnimationFrame( animate );
 		renderer.render( scene, camera );
 	}
