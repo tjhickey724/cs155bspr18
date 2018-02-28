@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<script type="text/javascript" src="/js/three.js"></script>
+	<script type="text/javascript" src="/js/physi.js"></script>
+
+
+</head>
+
+<body>
+	<div id="viewport"></div>
+
+<script type="text/javascript">
+
+	'use strict';
+
+	Physijs.scripts.worker = '/js/physijs_worker.js';
+	Physijs.scripts.ammo = '/js/ammo.js';
+
+	var initScene, render, renderer, scene, camera, box;
+
+	initScene = function() {
+		renderer = new THREE.WebGLRenderer({ antialias: true });
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+		document.getElementById( 'viewport' ).appendChild( renderer.domElement );
+
+		scene = new Physijs.Scene;
+
+		camera = new THREE.PerspectiveCamera(
+			35,
+			window.innerWidth / window.innerHeight,
+			1,
+			1000
+		);
+		camera.position.set( 60, 50, 60 );
+		camera.lookAt( scene.position );
+		scene.add( camera );
+
+		var light = new THREE.PointLight( 0xFFFFFF );
+		light.position.set( 20, 40, -15 );
+		light.castShadow = true;
+		light.shadow.mapSize.width = 2048;  // default
+		light.shadow.mapSize.height = 2048; // default
+		light.shadow.camera.near = 0.5;       // default
+		light.shadow.camera.far = 500      // default
+
+		scene.add( light );
+
+		// Box
+		var ball = new Physijs.BoxMesh(
+			new THREE.SphereGeometry( 5, 15, 15 ),
+			new THREE.MeshLambertMaterial({ color: 0xFFFFFF })
+		);
+		ball.castShadow = true;
+		scene.add( ball );
+
+		// Box
+		var ground = new Physijs.BoxMesh(
+			new THREE.BoxGeometry( 25, 1, 25 ),
+			new THREE.MeshLambertMaterial({ color: 0xFFFFFF }),
+			0 // mass
+		);
+		ground.position.y = -30;
+		ground.receiveShadow = true;
+		scene.add( ground);
+
+		requestAnimationFrame( render );
+	};
+
+	render = function() {
+		scene.simulate(); // run physics
+		renderer.render( scene, camera); // render the scene
+		requestAnimationFrame( render );
+	};
+
+	window.onload = initScene();
+
+	</script>
+</body>
+</html>
