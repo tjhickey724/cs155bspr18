@@ -126,11 +126,11 @@ Quiz 1
 			clock.start();
 
 			controls = new THREE.FlyControls( camera );
-							controls.movementSpeed = 1000;
+							controls.movementSpeed = 200;
 							controls.domElement = renderer.domElement;
-							controls.rollSpeed = Math.PI / 24;
+							controls.rollSpeed = Math.PI / 6;
 							controls.autoForward = false;
-							controls.dragToLook = false;
+							controls.dragToLook = true;
   }
 
 	function addLight(color){
@@ -246,9 +246,10 @@ Quiz 1
 	function animate() {
 		requestAnimationFrame( animate );
 
-		if (clock){
-		  var delta = clock.getDelta(); controls.movementSpeed = 10; controls.update( delta );
-    }
+
+		  var delta = clock.getDelta();
+      controls.update( delta );
+
 
 		renderer.render( scene, camera );
 	}
