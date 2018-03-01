@@ -13,7 +13,9 @@ Practice Quiz 1 solution
 	var cylinderMesh, planeMesh; // we have some mesh objects
 	var light1,light2;  // we have two lights
 
-	var ball;
+	var ball,cone;
+
+  var controls = {move:true, turn:false};
 
 	init(); // initialize these 9 variables
 	animate();  // start the animation loop!
@@ -44,9 +46,13 @@ Practice Quiz 1 solution
 			box.translateX(0);
 			box.translateZ(10);
 
-			var cone = addConeMesh();
+			cone = addConeMesh();
 			cone.translateY(6);
 			cone.rotateZ(-Math.PI/2);
+      cone.__dirtyPosition = true;
+      cone.__dirtyRotation = true;
+      cone.setAngularVelocity(new THREE.Vector3(0,10,0));
+      cone.setLinearVelocity(new THREE.Vector3(0,0,0));
 
 			var plane = addPlaneMesh();
       plane.__dirtyPosition = true;
@@ -133,7 +139,8 @@ Practice Quiz 1 solution
 		function addConeMesh(){
 			var geometry = new THREE.ConeGeometry( 4, 5, 32);
 			var material = new THREE.MeshLambertMaterial( { color: 0x00ff00} );
-			var mesh = new THREE.Mesh( geometry, material );
+			//var mesh = new THREE.Mesh( geometry, material );
+      var mesh = new Physijs.ConeMesh( geometry, material );
 			mesh.castShadow = true;
 			scene.add( mesh );
 			return mesh;
@@ -186,7 +193,13 @@ Practice Quiz 1 solution
 
 	function animate() {
 		//console.dir(ball.getLinearVelocity());
-
+    //cone.__dirtyRotation = true;
+    //cone.rotateX(Math.PI/180*2);
+    if (controls.move){
+      ball.setLinearVelocity(new THREE.Vector3(0,0,10));
+    } else {
+      ball.setLinearVelocity(new THREE.Vector3(0,0,0));
+    }
     scene.simulate();
 		requestAnimationFrame( animate );
 		renderer.render( scene, camera );
