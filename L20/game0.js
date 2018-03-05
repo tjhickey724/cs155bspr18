@@ -23,8 +23,8 @@ The user moves a cube around the board trying to knock balls into a cone
 
 
 	var controls =
-	     {fwd:false, bwd:false, left:false, right:false, 
-				speed:10,
+	     {fwd:false, bwd:false, left:false, right:false,
+				speed:10, fly:false,
 		    camera:camera}
 
 	var gameState =
@@ -333,7 +333,7 @@ The user moves a cube around the board trying to knock balls into a cone
   }
 
 	function keydown(event){
-		//console.log("Keydown:"+event.key);
+		console.log("Keydown:"+event.key);
 		//console.dir(event);
 		// first we handle the "play again" key in the "youwon" scene
 		if (gameState.scene == 'youwon' && event.key=='r') {
@@ -353,6 +353,7 @@ The user moves a cube around the board trying to knock balls into a cone
 			case "r": controls.up = true; break;
 			case "f": controls.down = true; break;
 			case "m": controls.speed = 30; break;
+      case " ": controls.fly = true; break;
 
 			// switch cameras
 			case "1": gameState.camera = camera; break;
@@ -379,6 +380,7 @@ The user moves a cube around the board trying to knock balls into a cone
 			case "r": controls.up    = false; break;
 			case "f": controls.down  = false; break;
 			case "m": controls.speed = 10; break;
+      case " ": controls.fly = false; break;
 		}
 	}
 
@@ -398,6 +400,10 @@ The user moves a cube around the board trying to knock balls into a cone
 			velocity.x=velocity.z=0;
 			avatar.setLinearVelocity(velocity); //stop the xz motion
 		}
+
+    if (controls.fly){
+      avatar.setLinearVelocity(new THREE.Vector3(0,controls.speed,0));
+    }
 
 		if (controls.left){
 			avatar.setAngularVelocity(new THREE.Vector3(0,controls.speed*0.1,0));
