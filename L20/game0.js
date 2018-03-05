@@ -24,7 +24,7 @@ The user moves a cube around the board trying to knock balls into a cone
 
 	var controls =
 	     {fwd:false, bwd:false, left:false, right:false,
-				speed:10, fly:false,
+				speed:10, fly:false, reset:false,
 		    camera:camera}
 
 	var gameState =
@@ -354,6 +354,8 @@ The user moves a cube around the board trying to knock balls into a cone
 			case "f": controls.down = true; break;
 			case "m": controls.speed = 30; break;
       case " ": controls.fly = true; break;
+      case "h": controls.reset = true; break;
+
 
 			// switch cameras
 			case "1": gameState.camera = camera; break;
@@ -381,6 +383,7 @@ The user moves a cube around the board trying to knock balls into a cone
 			case "f": controls.down  = false; break;
 			case "m": controls.speed = 10; break;
       case " ": controls.fly = false; break;
+      case "h": controls.reset = false; break;
 		}
 	}
 
@@ -410,6 +413,11 @@ The user moves a cube around the board trying to knock balls into a cone
 		} else if (controls.right){
 			avatar.setAngularVelocity(new THREE.Vector3(0,-controls.speed*0.1,0));
 		}
+
+    if (controls.reset){
+      avatar.__dirtyPosition = true;
+      avatar.position.set(40,10,40);
+    }
 
 	}
 
