@@ -106,11 +106,10 @@ The user moves a cube around the board trying to knock balls into a cone
 			cone.position.set(10,3,7);
 			scene.add(cone);
 
-			npc = createBoxMesh(0x0000ff);
+			npc = createBoxMesh2(0x0000ff,1,2,4);
 			npc.position.set(30,5,-30);
-			npc.scale.set(1,2,4);
 			scene.add(npc);
-			console.dir(npc);
+			//console.dir(npc);
 			//playGameMusic();
 
 	}
@@ -147,6 +146,9 @@ The user moves a cube around the board trying to knock balls into a cone
 						this.position.y = this.position.y - 100;
 						this.__dirtyPosition = true;
 					}
+          else if (other_object == avatar){
+            gameState.health ++;
+          }
 				}
 			)
 		}
@@ -306,14 +308,11 @@ The user moves a cube around the board trying to knock balls into a cone
 		avatarCam.lookAt(0,4,10);
 		mesh.add(avatarCam);
 
-		var scoop1 = createBoxMesh2(0xff0000,10,1,0.1);
-		var scoop2 = createBoxMesh2(0xff0000,10,1,0.1);
+  /*
+    var scoop1 = createBoxMesh2(0xff0000,10,1,0.1);
 		scoop1.position.set(0,-2,5);
-		scoop2.position.set(0,-3,5);
-		//scoop1.rotation.set(0,Math.PI/6);
-		scoop2.rotation.set(0,-Math.PI/6);
 		mesh.add(scoop1);
-		//mesh.add(scoop2);
+    */
 
 		return mesh;
 	}
@@ -421,7 +420,7 @@ The user moves a cube around the board trying to knock balls into a cone
 
 	function updateNPC(){
 		npc.lookAt(avatar.position);
-	  npc.__dirtyPosition = true;
+	  //npc.__dirtyPosition = true;
 		npc.setLinearVelocity(npc.getWorldDirection().multiplyScalar(0.5));
 	}
 
@@ -466,7 +465,7 @@ The user moves a cube around the board trying to knock balls into a cone
 		switch(gameState.scene) {
 
 			case "youwon":
-				endText.rotateY(0.005);
+				//endText.rotateY(0.005);
 				renderer.render( endScene, endCamera );
 				break;
 
@@ -487,6 +486,9 @@ The user moves a cube around the board trying to knock balls into a cone
 
 		//draw heads up display ..
 	  var info = document.getElementById("info");
-		info.innerHTML='<div style="font-size:24pt">Score: ' + gameState.score + '</div>';
+		info.innerHTML='<div style="font-size:24pt">Score: '
+    + gameState.score
+    + " health="+gameState.health
+    + '</div>';
 
 	}
