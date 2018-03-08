@@ -108,7 +108,16 @@ The user moves a cube around the board trying to knock balls into a cone
 
 			npc = createBoxMesh2(0x0000ff,1,2,4);
 			npc.position.set(30,5,-30);
+      npc.addEventListener('collision',function(other_object){
+        if (other_object==avatar){
+          gameState.scene = 'youwon';
+        }
+      })
 			scene.add(npc);
+
+      var wall = createWall(0xffaa00,50,3,1);
+      wall.position.set(10,0,10);
+      scene.add(wall);
 			//console.dir(npc);
 			//playGameMusic();
 
@@ -133,7 +142,7 @@ The user moves a cube around the board trying to knock balls into a cone
 
 			ball.addEventListener( 'collision',
 				function( other_object, relative_velocity, relative_rotation, contact_normal ) {
-					if (other_object==cone){
+					if (other_object==avatar){
 						console.log("ball "+i+" hit the cone");
 						soundEffect('good.wav');
 						gameState.score += 1;  // add one to the score
@@ -146,7 +155,7 @@ The user moves a cube around the board trying to knock balls into a cone
 						this.position.y = this.position.y - 100;
 						this.__dirtyPosition = true;
 					}
-          else if (other_object == avatar){
+          else if (other_object == cone){
             gameState.health ++;
           }
 				}
@@ -249,6 +258,15 @@ The user moves a cube around the board trying to knock balls into a cone
 		mesh.castShadow = true;
 		return mesh;
 	}
+
+  function createWall(color,w,h,d){
+    var geometry = new THREE.BoxGeometry( w, h, d);
+    var material = new THREE.MeshLambertMaterial( { color: color} );
+    mesh = new Physijs.BoxMesh( geometry, material, 0 );
+    //mesh = new Physijs.BoxMesh( geometry, material,0 );
+    mesh.castShadow = true;
+    return mesh;
+  }
 
 
 
@@ -421,7 +439,7 @@ The user moves a cube around the board trying to knock balls into a cone
 	function updateNPC(){
 		npc.lookAt(avatar.position);
 	  //npc.__dirtyPosition = true;
-		npc.setLinearVelocity(npc.getWorldDirection().multiplyScalar(0.5));
+		npc.setLinearVelocity(npc.getWorldDirection().multiplyScalar(-0.5));
 	}
 
   function updateAvatar(){
