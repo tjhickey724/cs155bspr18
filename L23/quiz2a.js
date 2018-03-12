@@ -25,8 +25,7 @@ The user moves a cube around the board trying to knock balls into a cone
 
 	var controls =
 	     {fwd:false, bwd:false, left:false, right:false,
-				speed:10, fly:false, reset:false,
-		    camera:camera}
+				speed:10, fly:false, reset:false}
 
 	var gameState =
 	     {score:0, health:10, scene:'main', camera:'none' }
@@ -85,7 +84,7 @@ The user moves a cube around the board trying to knock balls into a cone
 			var ground = createGround('grass.png');
 			scene.add(ground);
 			var skybox = createSkyBox('sky.jpg',1);
-			scene.add(skybox);
+			//scene.add(skybox);
 
 			// create the avatar
 			avatarCam = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -96,8 +95,9 @@ The user moves a cube around the board trying to knock balls into a cone
 			scene.add(avatar);
 			gameState.camera = avatarCam;
 
-      edgeCam = new THREE.PerspectiveCamera( 120, window.innerWidth / window.innerHeight, 0.1, 1000 );
-      edgeCam.position.set(20,20,10);
+      edgeCam = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 1000 );
+      edgeCam.position.set(0,100,100);
+			gameState.camera = edgeCam;
 
 
 			addBalls();
