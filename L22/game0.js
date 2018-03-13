@@ -379,6 +379,7 @@ The user moves a cube around the board trying to knock balls into a cone
   }
 
 	function keydown(event){
+    console.dir(event);
 		console.log("Keydown: '"+event.key+"'");
 		//console.dir(event);
 		// first we handle the "play again" key in the "youwon" scene

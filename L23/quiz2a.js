@@ -12,6 +12,7 @@ The user moves a cube around the board trying to knock balls into a cone
 	var scene, renderer;  // all threejs programs need these
 	var camera, avatarCam, edgeCam;  // we have two cameras in the main scene
 	var avatar;
+  var coneAvatar;
 	// here are some mesh objects ...
 
 	var cone;
@@ -27,10 +28,14 @@ The user moves a cube around the board trying to knock balls into a cone
 	     {fwd:false, bwd:false, left:false, right:false,
 				speed:10, fly:false, reset:false}
 
+  var coneAvatarControls =
+	     {fwd:false, bwd:false, left:false, right:false,
+				speed:10, fly:false, reset:false}
+
 	var gameState =
 	     {score:0, health:10, scene:'main', camera:'none' }
 
-
+console.log("This is my code!!");
 	// Here is the main game control
   init(); //
 	initControls();
@@ -113,14 +118,30 @@ The user moves a cube around the board trying to knock balls into a cone
 			console.dir(npc);
 			//playGameMusic();
 
+      coneAvatar = createRedCone();
+      scene.add(coneAvatar);
+
 	}
 
+  function createRedCone(){
+		var geometry = new THREE.ConeGeometry(5,20,32);
+    geometry.rotateX(Math.PI/2);
+    // it better to rotate the geometry before making a Mesh
+    // because it doesn't mess up our notion of the local x,y,z axes
+    // doing it this way, (0,0,1) is the direction of the pointy end of the coneAvatar
 
-	function randN(n){
+		var material = new THREE.MeshLambertMaterial({color: 0xff0000});
+		var pmaterial = new Physijs.createMaterial(material, 0.9, 0.5);
+		var mesh = new Physijs.BoxMesh(geometry, pmaterial);
+		mesh.setDamping(0.1,0.1);
+		mesh.castShadow = true;
+		mesh.position.set(-10,20,-10);
+		return mesh;
+	}
+
+  function randN(n){
 		return Math.random()*n;
 	}
-
-
 
 
 	function addBalls(){
@@ -394,10 +415,11 @@ The user moves a cube around the board trying to knock balls into a cone
       case "3": gameState.camera = edgeCam; break;
 
 			// move the camera around, relative to the avatar
-			case "ArrowLeft": avatarCam.translateY(1);break;
-			case "ArrowRight": avatarCam.translateY(-1);break;
-			case "ArrowUp": avatarCam.translateZ(-1);break;
-			case "ArrowDown": avatarCam.translateZ(1);break;
+      case "ArrowLeft": coneAvatarControls.left=true;console.log("coneAvatar turning left");break;
+      case "ArrowRight": coneAvatarControls.right=true;console.log("coneAvatar turning right");break;
+      case "ArrowUp": coneAvatarControls.fwd=true;console.log("coneAvatar moving forward");break;
+      case "ArrowDown": coneAvatarControls.bwd=true;console.log("coneAvatar moving backward");break;
+
 
 		}
 
@@ -416,6 +438,13 @@ The user moves a cube around the board trying to knock balls into a cone
 			case "m": controls.speed = 10; break;
       case " ": controls.fly = false; break;
       case "h": controls.reset = false; break;
+
+      case "ArrowLeft": coneAvatarControls.left=false;console.log("coneAvatar stop turning left");break;
+      case "ArrowRight": coneAvatarControls.right=false;console.log("coneAvatar stop turning right");break;
+      case "ArrowUp": coneAvatarControls.fwd=false;console.log("coneAvatar stop moving forward");break;
+      case "ArrowDown": coneAvatarControls.bwd=false;console.log("coneAvatar stop moving backward");break;
+
+
 		}
 	}
 
@@ -425,7 +454,7 @@ The user moves a cube around the board trying to knock balls into a cone
 		npc.setLinearVelocity(npc.getWorldDirection().multiplyScalar(0.5));
 	}
 
-  function updateAvatar(){
+  function updateAvatar(avatar,controls){
 		"change the avatar's linear or angular velocity based on controls state (set by WSAD key presses)"
 
 		var forward = avatar.getWorldDirection();
@@ -471,7 +500,8 @@ The user moves a cube around the board trying to knock balls into a cone
 				break;
 
 			case "main":
-				updateAvatar();
+				updateAvatar(avatar,controls);
+        updateAvatar(coneAvatar,coneAvatarControls);
 				updateNPC();
         edgeCam.lookAt(avatar.position);
 	    	scene.simulate();
