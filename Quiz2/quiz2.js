@@ -418,10 +418,6 @@ The user moves a cube around the board trying to knock balls into a cone
 			gameState.scene = 'main';
 			gameState.score = 0;
 			addBalls();
-			brs.position.set(40,40,40);  // move the big red ball back to the top
-			brs.__dirtyPosition = true;
-			brs.setLinearVelocity(0,0.1,0);
-			console.dir(brs);
 			return;
 		}
 
