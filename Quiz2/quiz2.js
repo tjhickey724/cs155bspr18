@@ -12,6 +12,7 @@ The user moves a cube around the board trying to knock balls into a cone
 	var scene, renderer;  // all threejs programs need these
 	var camera, avatarCam, edgeCam;  // we have two cameras in the main scene
 	var avatar;
+	var brs;   //big red sphere
 	// here are some mesh objects ...
 
 	var cone;
@@ -112,9 +113,53 @@ The user moves a cube around the board trying to knock balls into a cone
 			scene.add(npc);
 			console.dir(npc);
 			//playGameMusic();
+			brs = createBouncyRedSphere();
+			brs.position.set(-40,40,40);
+			scene.add(brs);
+			console.log('just added brs');
+			console.dir(brs);
+
+			var platform = createBlackBox();
+			platform.position.set(0,50,0);
+			platform.__dirtyPosition==true;
+			scene.add(platform);
+
 
 	}
 
+	function createBlackBox(){
+		var geometry = new THREE.BoxGeometry( 10, 2, 10);
+		var material = new THREE.MeshLambertMaterial( { color: 0x000000} );
+		mesh = new Physijs.BoxMesh( geometry, material, 0);
+    //mesh = new Physijs.BoxMesh( geometry, material,0 );
+		mesh.castShadow = true;
+		return mesh;
+	}
+
+  function createBouncyRedSphere(){
+		//var geometry = new THREE.SphereGeometry( 4, 20, 20);
+		var geometry = new THREE.SphereGeometry( 20, 16, 16);
+		var material = new THREE.MeshLambertMaterial( { color: 0xff0000} );
+		var pmaterial = new Physijs.createMaterial(material,0.9,0.95);
+		var mass = 10;
+    var mesh = new Physijs.SphereMesh( geometry, pmaterial, mass );
+		mesh.setDamping(0.1,0.1);
+		mesh.castShadow = true;
+
+		mesh.addEventListener( 'collision',
+			function( other_object, relative_velocity, relative_rotation, contact_normal ) {
+				if (other_object==avatar){
+					console.log("avatar hit the big red ball");
+					soundEffect('bad.wav');
+					gameState.health = gameState.health - 1;
+
+				}
+			}
+		)
+
+		return mesh;
+
+	}
 
 	function randN(n){
 		return Math.random()*n;
@@ -146,6 +191,8 @@ The user moves a cube around the board trying to knock balls into a cone
 						// threejs doesn't let us remove it from the schene...
 						this.position.y = this.position.y - 100;
 						this.__dirtyPosition = true;
+					} else if (other_object == avatar){
+						gameState.health += 1;
 					}
 				}
 			)
@@ -315,6 +362,8 @@ The user moves a cube around the board trying to knock balls into a cone
 		mesh.add(scoop1);
 		//mesh.add(scoop2);
 
+
+
 		return mesh;
 	}
 
@@ -369,6 +418,10 @@ The user moves a cube around the board trying to knock balls into a cone
 			gameState.scene = 'main';
 			gameState.score = 0;
 			addBalls();
+			brs.position.set(40,40,40);  // move the big red ball back to the top
+			brs.__dirtyPosition = true;
+			brs.setLinearVelocity(0,0.1,0);
+			console.dir(brs);
 			return;
 		}
 
@@ -382,6 +435,14 @@ The user moves a cube around the board trying to knock balls into a cone
 			case "r": controls.up = true; break;
 			case "f": controls.down = true; break;
 			case "m": controls.speed = 30; break;
+
+			case "k":
+				avatar.position.set(0,60,0);
+				avatar.__dirtyPosition = true;
+				console.dir(avatar);
+			break;
+
+
       case " ": controls.fly = true;
           console.log("space!!");
           break;
@@ -473,6 +534,9 @@ The user moves a cube around the board trying to knock balls into a cone
 			case "main":
 				updateAvatar();
 				updateNPC();
+				if (brs.position.y < 0){
+					gameState.scene = 'youwon';
+				}
         edgeCam.lookAt(avatar.position);
 	    	scene.simulate();
 				if (gameState.camera!= 'none'){
@@ -487,6 +551,8 @@ The user moves a cube around the board trying to knock balls into a cone
 
 		//draw heads up display ..
 	  var info = document.getElementById("info");
-		info.innerHTML='<div style="font-size:24pt">Score: ' + gameState.score + '</div>';
+		info.innerHTML='<div style="font-size:24pt">Score: ' + gameState.score +
+        '  Health:'+ gameState.health +
+				'</div>';
 
 	}
