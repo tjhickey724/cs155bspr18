@@ -19,7 +19,10 @@ The user moves a cube around the board trying to knock balls into a cone
 	var cone;
 	var npc;
 
-	var endScene, endCamera, endText;
+	var startScene, startCamera,
+	    winScene, winCamera,
+	    loseScene, loseCamera,
+			endText, loseText;
 
 
 
@@ -42,16 +45,37 @@ The user moves a cube around the board trying to knock balls into a cone
 
 
 	function createEndScene(){
-		endScene = initScene();
-		endText = createSkyBox('youwon.png',10);
-		//endText.rotateX(Math.PI);
-		endScene.add(endText);
+		winScene = initScene();
+		winText = createSkyBox('youwon.png',10);
+		winScene.add(winText);
 		var light1 = createPointLight();
 		light1.position.set(0,200,20);
-		endScene.add(light1);
-		endCamera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 1000 );
-		endCamera.position.set(0,50,1);
-		endCamera.lookAt(0,0,0);
+		winScene.add(light1);
+		winCamera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 10000 );
+		winCamera.position.set(0,50,1);
+		winCamera.lookAt(0,0,0);
+
+		loseScene = initScene();
+		loseText = createSkyBox('youlose.png',10);
+		loseText.position.set(0,-1500,0);
+		loseScene.add(loseText);
+		var light1 = createPointLight();
+		light1.position.set(0,200,20);
+		loseScene.add(light1);
+		loseCamera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 10000 );
+		loseCamera.position.set(0,50,1);
+		loseCamera.lookAt(0,0,0);
+
+		startScene = initScene();
+		startText = createSkyBox('play.png',10);
+		startText.position.set(0,-1500,0);
+		startScene.add(startText);
+		var light1 = createPointLight();
+		light1.position.set(0,200,20);
+		startScene.add(light1);
+		startCamera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 10000 );
+		startCamera.position.set(0,50,1);
+		startCamera.lookAt(0,0,0);
 
 	}
 
@@ -107,6 +131,23 @@ The user moves a cube around the board trying to knock balls into a cone
 			npc.scale.set(1,2,4);
 			scene.add(npc);
 			console.dir(npc);
+
+			npc.addEventListener( 'collision',
+				function( other_object, relative_velocity, relative_rotation, contact_normal ) {
+					if (other_object==avatar){
+						console.log("avatar hit the npc");
+						console.dir(npc);
+						soundEffect('bad.wav');
+						gameState.health = gameState.health - 5;
+						var x = (Math.random()-0.5)*60;
+						var z = (Math.random()-0.5)*60;
+						npc.position.set(x,5,z);
+						npc.__dirtyPosition=true;
+						console.dir(npc);
+
+					}
+				}
+			)
 			//playGameMusic();
 			brs = createBouncyRedSphere();
 			brs.position.set(-40,40,40);
@@ -121,6 +162,8 @@ The user moves a cube around the board trying to knock balls into a cone
 
 			initSuzanneJSON();
 			initSuzanneOBJ();
+
+			gameState.scene = 'start';
 
 
 	}
@@ -182,7 +225,7 @@ The user moves a cube around the board trying to knock balls into a cone
 						soundEffect('good.wav');
 						gameState.score += 1;  // add one to the score
 						if (gameState.score==numBalls) {
-							gameState.scene='youwon';
+							game='youwon';
 						}
             //scene.remove(ball);  // this isn't working ...
 						// make the ball drop below the scene ..
@@ -454,13 +497,21 @@ var theObj;
 		//console.log("Keydown: '"+event.key+"'");
 		//console.dir(event);
 		// first we handle the "play again" key in the "youwon" scene
-		if (gameState.scene == 'youwon' && event.key=='r') {
+		if (gameState.scene== 'start' && event.key=='p'){
+			gameState.scene='main';
+			return;
+		}
+
+		if ((gameState.scene == 'youwon' || gameState.scene=='youlose') && event.key=='r') {
 			gameState.scene = 'main';
 			gameState.score = 0;
+			gameState.health = 10;
 			// next reposition the big red sphere (brs)
+			scene.remove(brs);
 			brs.position.set(-40,40,40);
 			brs.__dirtyPosition = true;
 			brs.setLinearVelocity(0,1,0);
+			scene.add(brs);
 			addBalls();
 			return;
 		}
@@ -525,7 +576,11 @@ var theObj;
 	function updateNPC(){
 		npc.lookAt(avatar.position);
 	  npc.__dirtyPosition = true;
-		npc.setLinearVelocity(npc.getWorldDirection().multiplyScalar(0.05));
+
+		if (npc.position.distanceTo(avatar.position)<30){
+			npc.setLinearVelocity(npc.getWorldDirection().multiplyScalar(5));
+		}
+
 	}
 
   function updateAvatar(){
@@ -577,12 +632,29 @@ var theObj;
 		switch(gameState.scene) {
 
 
+			case "start":
+				startText.rotateY(0.005);
+				renderer.render( startScene, startCamera );
+				break;
+
 			case "youwon":
-				endText.rotateY(0.005);
-				renderer.render( endScene, endCamera );
+				winText.rotateY(0.005);
+				renderer.render( winScene, winCamera );
+				break;
+
+			case "youlose":
+			  loseText.rotateY(0.005);
+				renderer.render( loseScene, loseCamera );
+				break;
+
+			case "youlose":
+				renderer.render( loseScene, loseCamera );
 				break;
 
 			case "main":
+			  if (gameState.health <= 0) {
+					gameState.scene = 'youlose';
+				}
 				updateAvatar();
 				updateNPC();
 				updateSuzyOBJ();
