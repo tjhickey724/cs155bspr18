@@ -153,7 +153,6 @@ The user moves a cube around the board trying to knock balls into a cone
 					soundEffect('bad.wav');
 					gameState.health = gameState.health - 1;
 
-
 				}
 			}
 		)
@@ -306,7 +305,7 @@ The user moves a cube around the board trying to knock balls into a cone
 		texture.wrapT = THREE.RepeatWrapping;
 		texture.repeat.set( 15, 15 );
 		var material = new THREE.MeshLambertMaterial( { color: 0xffffff,  map: texture ,side:THREE.DoubleSide} );
-		var pmaterial = new Physijs.createMaterial(material,0.9,0.95);
+		var pmaterial = new Physijs.createMaterial(material,0.9,0.05);
 		//var mesh = new THREE.Mesh( geometry, material );
 		var mesh = new Physijs.BoxMesh( geometry, pmaterial, 0 );
 
@@ -418,11 +417,6 @@ The user moves a cube around the board trying to knock balls into a cone
 		if (gameState.scene == 'youwon' && event.key=='r') {
 			gameState.scene = 'main';
 			gameState.score = 0;
-
-			brs.position.set(40,40,-40);
-			brs.__dirtyPosition==true;
-			brs.setLinearVelocity(0,1,0);
-			scene.add(brs);
 			addBalls();
 			return;
 		}
@@ -434,7 +428,7 @@ The user moves a cube around the board trying to knock balls into a cone
 			case "s": controls.bwd = true; break;
 			case "a": controls.left = true; break;
 			case "d": controls.right = true; break;
-			case "r": avatar.rotation.set(0,0,0);avatar.__dirtyRotation=true; break;
+			case "r": controls.up = true; break;
 			case "f": controls.down = true; break;
 			case "m": controls.speed = 30; break;
 
@@ -538,7 +532,6 @@ The user moves a cube around the board trying to knock balls into a cone
 				updateNPC();
 				if (brs.position.y < 0){
 					gameState.scene = 'youwon';
-					scene.remove(brs);
 				}
         edgeCam.lookAt(avatar.position);
 	    	scene.simulate();
