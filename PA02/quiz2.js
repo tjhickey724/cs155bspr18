@@ -162,6 +162,8 @@ The user moves a cube around the board trying to knock balls into a cone
 
 			initSuzanneJSON();
 			initSuzanneOBJ();
+			initSuzanneOBJ2();
+
 
 			gameState.scene = 'start';
 
@@ -225,7 +227,7 @@ The user moves a cube around the board trying to knock balls into a cone
 						soundEffect('good.wav');
 						gameState.score += 1;  // add one to the score
 						if (gameState.score==numBalls) {
-							game='youwon';
+							gameState.scene='youwon';
 						}
             //scene.remove(ball);  // this isn't working ...
 						// make the ball drop below the scene ..
@@ -404,6 +406,40 @@ var theObj;
 						suzyOBJ.position.set(20,20,20);
 						scene.add(suzyOBJ);
 						console.log("just added suzyOBJ");
+						//suzyOBJ = new Physijs.BoxMesh(obj);
+
+						//
+					},
+					function(xhr){
+						console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );},
+
+					function(err){
+						console.log("error in loading: "+err);}
+				)
+	}
+
+	function initSuzanneOBJ2(){
+		// this simply loads suzanne and attaches her to a Physijs BoxMesh
+		// using the .add method ...
+		var loader = new THREE.OBJLoader();
+		loader.load("../models/suzyA.obj",
+					function ( obj) {
+						console.log("loading obj file");
+						console.dir(obj);
+						//scene.add(obj);
+						obj.castShadow = true;
+						// first we create a little box
+						var geometry = new THREE.BoxGeometry( 2,2,2);
+						var material = new THREE.MeshBasicMaterial( {color:0xffffff, wireframe: true} );
+						material.writeColor=false;
+						var mesh = new Physijs.BoxMesh( geometry, material );
+						mesh.add(obj);
+						mesh.position.set(-10,2,-10);
+						scene.add(mesh);
+
+
+
+						console.log("just added suzyOBJ2");
 						//suzyOBJ = new Physijs.BoxMesh(obj);
 
 						//
