@@ -16,6 +16,8 @@ The user moves a cube around the board trying to knock balls into a cone
 
 	var cone;
 	var npc;
+  var blueCube;
+  var yellowCube;
 
 	var endScene, endCamera, endText;
 
@@ -24,7 +26,7 @@ The user moves a cube around the board trying to knock balls into a cone
 
 
 	var controls =
-	     {fwd:false, bwd:false, left:false, right:false,
+	     {fwd:false, bwd:false, left:false, right:false, up:false,
 				speed:10, fly:false, reset:false}
 
 	var gameState =
@@ -113,7 +115,44 @@ The user moves a cube around the board trying to knock balls into a cone
 			console.dir(npc);
 			//playGameMusic();
 
+      yellowCube = createBoxMesh(0xffff00);
+      yellowCube.position.set(40,20,5);
+      scene.add(yellowCube);
+
+      blueCube = createBlueCube();
+      blueCube.position.set(-30,5,30);
+      scene.add(blueCube);
+
+      for (i=0; i<20; i++) {
+        var geometry = new THREE.BoxGeometry( 2, 1, 2);
+        var material = new THREE.MeshLambertMaterial( { color: 0x00ff00} );
+        var pmaterial = new Physijs.createMaterial(material,0.95,0.05);
+        var cube = new Physijs.BoxMesh( geometry, pmaterial );
+        cube.castShadow = true;
+        cube.position.set(-10,1.01*i+0.5,-10);
+        scene.add(cube);
+
+        cube.addEventListener( 'collision',
+  				function( other_object ) {
+  					if (other_object==ground){
+  						soundEffect('bad.wav');
+  					}
+  				}
+  			)
+      }
+
 	}
+
+
+  	function createBlueCube(){
+  		var geometry = new THREE.BoxGeometry( 2, 2, 2);
+  		var material = new THREE.MeshLambertMaterial( { color: 0x0000ff} );
+  		mesh = new Physijs.BoxMesh( geometry, material,0 );
+  		mesh.castShadow = true;
+  		return mesh;
+  	}
+
+
 
 
 	function randN(n){
@@ -375,6 +414,7 @@ The user moves a cube around the board trying to knock balls into a cone
 		// this is the regular scene
 		switch (event.key){
 			// change the way the avatar is moving
+      case ";": gameState.scene = 'youwon'; break;
 			case "w": controls.fwd = true;  break;
 			case "s": controls.bwd = true; break;
 			case "a": controls.left = true; break;
@@ -386,6 +426,7 @@ The user moves a cube around the board trying to knock balls into a cone
           console.log("space!!");
           break;
       case "h": controls.reset = true; break;
+      case "y": controls.up = true; break;
 
 
 			// switch cameras
@@ -407,6 +448,7 @@ The user moves a cube around the board trying to knock balls into a cone
 		//console.log("Keydown:"+event.key);
 		//console.dir(event);
 		switch (event.key){
+      case "y": controls.up = false; break;
 			case "w": controls.fwd   = false;  break;
 			case "s": controls.bwd   = false; break;
 			case "a": controls.left  = false; break;
@@ -473,6 +515,14 @@ The user moves a cube around the board trying to knock balls into a cone
 			case "main":
 				updateAvatar();
 				updateNPC();
+
+        if (controls.up){
+          yellowCube.setLinearVelocity(new THREE.Vector3(0,1,0));
+        }
+
+        blueCube.rotateY(0.01);
+        blueCube.__dirtyRotation = true;
+
         edgeCam.lookAt(avatar.position);
 	    	scene.simulate();
 				if (gameState.camera!= 'none'){
