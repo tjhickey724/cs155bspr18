@@ -15,6 +15,8 @@ The user moves a cube around the board trying to knock balls into a cone
 	var suzanne;
 	var brs;   //big red sphere
 	// here are some mesh objects ...
+	var blueCube;
+	var ground;
 
 	var cone;
 	var npc;
@@ -26,7 +28,7 @@ The user moves a cube around the board trying to knock balls into a cone
 
 
 	var controls =
-	     {fwd:false, bwd:false, left:false, right:false,
+	     {fwd:false, bwd:false, left:false, right:false, up:false,
 				speed:10, fly:false, reset:false, avatarCamAngle:Math.PI}
 
 	var gameState =
@@ -83,7 +85,7 @@ The user moves a cube around the board trying to knock balls into a cone
 
 
 			// create the ground and the skybox
-			var ground = createGround('grass.png');
+			ground = createGround('grass.png');
 			scene.add(ground);
 			var skybox = createSkyBox('sky.jpg',1);
 			scene.add(skybox);
@@ -121,8 +123,47 @@ The user moves a cube around the board trying to knock balls into a cone
 
 			initSuzanneJSON();
 			initSuzanneOBJ();
+			blueCube = createBlueCube();
+			scene.add(blueCube);
+
+			for(i=0; i<10; i++){
+				var cube = createGreenCube();
+				cube.position.set(-20,i*1.01,-20);
+				scene.add(cube);
+			}
 
 
+	}
+
+
+
+	function createBlueCube(){
+		var geometry = new THREE.BoxGeometry( 2, 2, 2);
+		var material = new THREE.MeshLambertMaterial( { color: 0x0000ff} );
+		mesh = new Physijs.BoxMesh( geometry, material, 0);
+		mesh.position.set(30,5,30);
+    //mesh = new Physijs.BoxMesh( geometry, material,0 );
+		mesh.castShadow = true;
+		return mesh;
+	}
+
+	function createGreenCube(){
+		var geometry = new THREE.BoxGeometry( 1, 1, 1);
+		var material = new THREE.MeshLambertMaterial( { color: 0x00ff00} );
+		var pmaterial = new Physijs.createMaterial(material,0.95,0.05);
+		mesh = new Physijs.BoxMesh( geometry, pmaterial);
+		//mesh = new Physijs.BoxMesh( geometry, material,0 );
+		mesh.castShadow = true;
+		mesh.addEventListener( 'collision',
+			function( other_object, relative_velocity, relative_rotation, contact_normal ) {
+				if (other_object==ground){
+					console.log("cube hit the ground");
+					soundEffect('bad.wav');
+
+				}
+			}
+		)
+		return mesh;
 	}
 
 	function createRedBox(){
@@ -473,6 +514,7 @@ var theObj;
 			case "a": controls.left = true; break;
 			case "d": controls.right = true; break;
 			case "m": controls.speed = 30; break;
+			case "y": controls.up = true; break;
 
 			case "k":
 				avatar.position.set(0,60,0);
@@ -485,6 +527,8 @@ var theObj;
           console.log("space!!");
           break;
       case "h": controls.reset = true; break;
+
+			case ";": gameState.scene = 'youwon'; return;
 
 
 			// switch cameras
@@ -519,19 +563,28 @@ var theObj;
 			case "m": controls.speed = 10; break;
       case " ": controls.fly = false; break;
       case "h": controls.reset = false; break;
+			case "y": controls.up = false; break;
 		}
 	}
 
 	function updateNPC(){
 		npc.lookAt(avatar.position);
 	  npc.__dirtyPosition = true;
+		if (controls.up){
+			npc.setLinearVelocity(0,1,0);
+		} else {
 		npc.setLinearVelocity(npc.getWorldDirection().multiplyScalar(0.05));
+	}
+
+
 	}
 
   function updateAvatar(){
 		"change the avatar's linear or angular velocity based on controls state (set by WSAD key presses)"
 
 		var forward = avatar.getWorldDirection();
+
+
 
 		if (controls.fwd){
 			avatar.setLinearVelocity(forward.multiplyScalar(controls.speed));
@@ -557,6 +610,7 @@ var theObj;
       avatar.__dirtyPosition = true;
       avatar.position.set(40,10,40);
     }
+
 
 	}
 
@@ -586,6 +640,8 @@ var theObj;
 				updateAvatar();
 				updateNPC();
 				updateSuzyOBJ();
+				blueCube.rotateY(0.01);
+				blueCube.__dirtyRotation= true;
 				if (brs.position.y < 0){
 					// when the big red sphere (brs) falls off the platform, end the game
 					gameState.scene = 'youwon';
