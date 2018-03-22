@@ -15,21 +15,20 @@ The user moves a cube around the board trying to knock balls into a cone
 	var suzanne;
 	var brs;   //big red sphere
 	// here are some mesh objects ...
+	var blueCube;
+	var ground;
 
 	var cone;
 	var npc;
 
-	var startScene, startCamera,
-	    winScene, winCamera,
-	    loseScene, loseCamera,
-			endText, loseText;
+	var endScene, endCamera, endText;
 
 
 
 
 
 	var controls =
-	     {fwd:false, bwd:false, left:false, right:false,
+	     {fwd:false, bwd:false, left:false, right:false, up:false,
 				speed:10, fly:false, reset:false, avatarCamAngle:Math.PI}
 
 	var gameState =
@@ -45,37 +44,16 @@ The user moves a cube around the board trying to knock balls into a cone
 
 
 	function createEndScene(){
-		winScene = initScene();
-		winText = createSkyBox('youwon.png',10);
-		winScene.add(winText);
+		endScene = initScene();
+		endText = createSkyBox('youwon.png',10);
+		//endText.rotateX(Math.PI);
+		endScene.add(endText);
 		var light1 = createPointLight();
 		light1.position.set(0,200,20);
-		winScene.add(light1);
-		winCamera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 10000 );
-		winCamera.position.set(0,50,1);
-		winCamera.lookAt(0,0,0);
-
-		loseScene = initScene();
-		loseText = createSkyBox('youlose.png',10);
-		loseText.position.set(0,-1500,0);
-		loseScene.add(loseText);
-		var light1 = createPointLight();
-		light1.position.set(0,200,20);
-		loseScene.add(light1);
-		loseCamera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 10000 );
-		loseCamera.position.set(0,50,1);
-		loseCamera.lookAt(0,0,0);
-
-		startScene = initScene();
-		startText = createSkyBox('play.png',10);
-		startText.position.set(0,-1500,0);
-		startScene.add(startText);
-		var light1 = createPointLight();
-		light1.position.set(0,200,20);
-		startScene.add(light1);
-		startCamera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 10000 );
-		startCamera.position.set(0,50,1);
-		startCamera.lookAt(0,0,0);
+		endScene.add(light1);
+		endCamera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 1000 );
+		endCamera.position.set(0,50,1);
+		endCamera.lookAt(0,0,0);
 
 	}
 
@@ -107,7 +85,7 @@ The user moves a cube around the board trying to knock balls into a cone
 
 
 			// create the ground and the skybox
-			var ground = createGround('grass.png');
+			ground = createGround('grass.png');
 			scene.add(ground);
 			var skybox = createSkyBox('sky.jpg',1);
 			scene.add(skybox);
@@ -131,23 +109,6 @@ The user moves a cube around the board trying to knock balls into a cone
 			npc.scale.set(1,2,4);
 			scene.add(npc);
 			console.dir(npc);
-
-			npc.addEventListener( 'collision',
-				function( other_object, relative_velocity, relative_rotation, contact_normal ) {
-					if (other_object==avatar){
-						console.log("avatar hit the npc");
-						console.dir(npc);
-						soundEffect('bad.wav');
-						gameState.health = gameState.health - 5;
-						var x = (Math.random()-0.5)*60;
-						var z = (Math.random()-0.5)*60;
-						npc.position.set(x,5,z);
-						npc.__dirtyPosition=true;
-						console.dir(npc);
-
-					}
-				}
-			)
 			//playGameMusic();
 			brs = createBouncyRedSphere();
 			brs.position.set(-40,40,40);
@@ -162,12 +123,47 @@ The user moves a cube around the board trying to knock balls into a cone
 
 			initSuzanneJSON();
 			initSuzanneOBJ();
-			initSuzanneOBJ2();
+			blueCube = createBlueCube();
+			scene.add(blueCube);
+
+			for(i=0; i<10; i++){
+				var cube = createGreenCube();
+				cube.position.set(-20,i*1.01,-20);
+				scene.add(cube);
+			}
 
 
-			gameState.scene = 'start';
+	}
 
 
+
+	function createBlueCube(){
+		var geometry = new THREE.BoxGeometry( 2, 2, 2);
+		var material = new THREE.MeshLambertMaterial( { color: 0x0000ff} );
+		mesh = new Physijs.BoxMesh( geometry, material, 0);
+		mesh.position.set(30,5,30);
+    //mesh = new Physijs.BoxMesh( geometry, material,0 );
+		mesh.castShadow = true;
+		return mesh;
+	}
+
+	function createGreenCube(){
+		var geometry = new THREE.BoxGeometry( 1, 1, 1);
+		var material = new THREE.MeshLambertMaterial( { color: 0x00ff00} );
+		var pmaterial = new Physijs.createMaterial(material,0.95,0.05);
+		mesh = new Physijs.BoxMesh( geometry, pmaterial);
+		//mesh = new Physijs.BoxMesh( geometry, material,0 );
+		mesh.castShadow = true;
+		mesh.addEventListener( 'collision',
+			function( other_object, relative_velocity, relative_rotation, contact_normal ) {
+				if (other_object==ground){
+					console.log("cube hit the ground");
+					soundEffect('bad.wav');
+
+				}
+			}
+		)
+		return mesh;
 	}
 
 	function createRedBox(){
@@ -418,40 +414,6 @@ var theObj;
 				)
 	}
 
-	function initSuzanneOBJ2(){
-		// this simply loads suzanne and attaches her to a Physijs BoxMesh
-		// using the .add method ...
-		var loader = new THREE.OBJLoader();
-		loader.load("../models/suzyA.obj",
-					function ( obj) {
-						console.log("loading obj file");
-						console.dir(obj);
-						//scene.add(obj);
-						obj.castShadow = true;
-						// first we create a little box
-						var geometry = new THREE.BoxGeometry( 2,2,2);
-						var material = new THREE.MeshBasicMaterial( {color:0xffffff, wireframe: true} );
-						material.writeColor=false;
-						var mesh = new Physijs.BoxMesh( geometry, material );
-						mesh.add(obj);
-						mesh.position.set(-10,2,-10);
-						scene.add(mesh);
-
-
-
-						console.log("just added suzyOBJ2");
-						//suzyOBJ = new Physijs.BoxMesh(obj);
-
-						//
-					},
-					function(xhr){
-						console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );},
-
-					function(err){
-						console.log("error in loading: "+err);}
-				)
-	}
-
 	function initSuzanneJSON(){
 		//load the monkey avatar into the scene, and add a Physics mesh and camera
 		var loader = new THREE.JSONLoader();
@@ -533,21 +495,13 @@ var theObj;
 		//console.log("Keydown: '"+event.key+"'");
 		//console.dir(event);
 		// first we handle the "play again" key in the "youwon" scene
-		if (gameState.scene== 'start' && event.key=='p'){
-			gameState.scene='main';
-			return;
-		}
-
-		if ((gameState.scene == 'youwon' || gameState.scene=='youlose') && event.key=='r') {
+		if (gameState.scene == 'youwon' && event.key=='r') {
 			gameState.scene = 'main';
 			gameState.score = 0;
-			gameState.health = 10;
 			// next reposition the big red sphere (brs)
-			scene.remove(brs);
 			brs.position.set(-40,40,40);
 			brs.__dirtyPosition = true;
 			brs.setLinearVelocity(0,1,0);
-			scene.add(brs);
 			addBalls();
 			return;
 		}
@@ -560,6 +514,7 @@ var theObj;
 			case "a": controls.left = true; break;
 			case "d": controls.right = true; break;
 			case "m": controls.speed = 30; break;
+			case "y": controls.up = true; break;
 
 			case "k":
 				avatar.position.set(0,60,0);
@@ -572,6 +527,8 @@ var theObj;
           console.log("space!!");
           break;
       case "h": controls.reset = true; break;
+
+			case ";": gameState.scene = 'youwon'; return;
 
 
 			// switch cameras
@@ -606,16 +563,19 @@ var theObj;
 			case "m": controls.speed = 10; break;
       case " ": controls.fly = false; break;
       case "h": controls.reset = false; break;
+			case "y": controls.up = false; break;
 		}
 	}
 
 	function updateNPC(){
 		npc.lookAt(avatar.position);
 	  npc.__dirtyPosition = true;
+		if (controls.up){
+			npc.setLinearVelocity(0,1,0);
+		} else {
+		npc.setLinearVelocity(npc.getWorldDirection().multiplyScalar(0.05));
+	}
 
-		if (npc.position.distanceTo(avatar.position)<30){
-			npc.setLinearVelocity(npc.getWorldDirection().multiplyScalar(5));
-		}
 
 	}
 
@@ -623,6 +583,8 @@ var theObj;
 		"change the avatar's linear or angular velocity based on controls state (set by WSAD key presses)"
 
 		var forward = avatar.getWorldDirection();
+
+
 
 		if (controls.fwd){
 			avatar.setLinearVelocity(forward.multiplyScalar(controls.speed));
@@ -649,6 +611,7 @@ var theObj;
       avatar.position.set(40,10,40);
     }
 
+
 	}
 
 	function updateSuzyOBJ(){
@@ -668,32 +631,17 @@ var theObj;
 		switch(gameState.scene) {
 
 
-			case "start":
-				startText.rotateY(0.005);
-				renderer.render( startScene, startCamera );
-				break;
-
 			case "youwon":
-				winText.rotateY(0.005);
-				renderer.render( winScene, winCamera );
-				break;
-
-			case "youlose":
-			  loseText.rotateY(0.005);
-				renderer.render( loseScene, loseCamera );
-				break;
-
-			case "youlose":
-				renderer.render( loseScene, loseCamera );
+				endText.rotateY(0.005);
+				renderer.render( endScene, endCamera );
 				break;
 
 			case "main":
-			  if (gameState.health <= 0) {
-					gameState.scene = 'youlose';
-				}
 				updateAvatar();
 				updateNPC();
 				updateSuzyOBJ();
+				blueCube.rotateY(0.01);
+				blueCube.__dirtyRotation= true;
 				if (brs.position.y < 0){
 					// when the big red sphere (brs) falls off the platform, end the game
 					gameState.scene = 'youwon';
