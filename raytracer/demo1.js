@@ -4,7 +4,7 @@ function runTest(){
 	canvas.width=900
 	canvas.height=900
 	const renderer = new Renderer(900,900)
-	const scene = new Scene()
+	const scene = new Scene('demo1')
 	const camera = new Camera()
 	camera.translateZ(10)
 	const s1 = new Sphere(new Vector3(-2,0,-8),2)

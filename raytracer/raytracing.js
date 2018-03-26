@@ -142,6 +142,10 @@ class RayIntersection{
 	}
 }
 
+
+
+
+
 class Camera {
 	constructor(){
 		this.position = new Vector3(0,0,0);
@@ -179,10 +183,14 @@ class Scene {
 
 	intersect(ray){
 		// intersect the ray with each object
-		let z = this.objects.map(function(x){return x.intersect(ray)});
+		let z = this.objects.map(
+			function(x){
+				return x.intersect(ray)});
 		//console.dir(z)
 		// throw out the non-intersections
-		z = z.filter(function(x){return x.object!= null})
+		z = z.filter(
+			function(x){
+				return x.object!= null})
 		//console.dir(z)
 		// if the ray didn't intersect any objects, return a non-intersection object
 		if (z.length==0)
@@ -212,17 +220,16 @@ class Sphere {
 
 	intersect(r){
 		// intersect the ray r with the sphere
-		var a = (r.d).dot(r.d)
-		var pc = r.p.subtract(this.center)
-		var b = 2*(r.d.dot(pc))
-		var c = pc.dot(pc) - this.radius*this.radius
-		var d = b*b-4*a*c
+		const a = (r.d).dot(r.d)
+		const pc = r.p.subtract(this.center)
+		const b = 2*(r.d.dot(pc))
+		const c = pc.dot(pc) - this.radius*this.radius
+		const d = b*b-4*a*c
 		if (d<0) return []
-		var t1 = 5
-		t1 = (-b - Math.sqrt(d))/(2*a)
-		var t2 = (-b + Math.sqrt(d))/(2*a)
-		var p1 = r.atTime(t1);
-		var p2 = r.atTime(t2);
+		const t1 = (-b - Math.sqrt(d))/(2*a)
+		const t2 = (-b + Math.sqrt(d))/(2*a)
+		const p1 = r.atTime(t1);
+		const p2 = r.atTime(t2);
 
 		if (d==0)
 		 	if (t1>0)
@@ -244,9 +251,9 @@ class Sphere {
 		// return the color of a the point p on the Sphere
 		// this ignore lights and just uses the position of the point on the sphere
 		// First we rescale the point so that its x,y,z values range from 0 to 256
-		var q = p.subtract(this.center).scale(128/this.radius).add(new Vector3(128,128,128))
+		const q = p.subtract(this.center).scale(128/this.radius).add(new Vector3(128,128,128))
 		//Then we use those values to create a color
-		var c =  'rgb('+Math.floor(q.x)+','+Math.floor(q.y)+','+Math.floor(q.z)+')'
+		const c =  'rgb('+Math.floor(q.x)+','+Math.floor(q.y)+','+Math.floor(q.z)+')'
 		//console.log(c)
 		return(c)
 	}
@@ -258,16 +265,14 @@ class Sphere {
 class Plane {
 	constructor(q,u,v){
 		this.position = q
-		this.horizontalDir=u;
-		this.verticalDir=v;
+		this.u=u;
+		this.v=v;
 		this.normal = u.cross(v).normalize()
 	}
 
 	intersect(ray){
-
-		const u = this.horizontalDir
-		const v = this.verticalDir
-
+		const u = this.u
+		const v = this.v
 		const t = this.position.subtract(ray.p).dot(this.normal)/
 						  ray.d.dot(this.normal)
 		if (t>0){
@@ -280,8 +285,9 @@ class Plane {
 	}
 
 	color(p){
-		const r = Math.abs(Math.floor(p.dot(this.horizontalDir)))%256
-		const g = Math.abs(Math.floor(p.dot(this.verticalDir)))%256
+		// here we create a computed texture for the plane
+		const r = Math.abs(Math.floor(p.dot(this.u)))%256
+		const g = Math.abs(Math.floor(p.dot(this.v)))%256
 		return "rgb("+r+","+g+",128)"
 	}
 }
