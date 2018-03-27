@@ -55,7 +55,9 @@ class Vector3 {
   normalize(){
 		return this.scale(1/this.length())
 	}
-
+  toString(){
+	return "Vector3("+this.x+","+this.y+","+this.z+")";
+  }
 }
 
 
@@ -74,6 +76,10 @@ class Ray3 {
 	atTime(t){
 		return this.p.add(this.d.scale(t))
 	}
+
+    toString(){
+	return "Ray3("+this.p+","+this.d+")";
+    }
 }
 
 
@@ -121,26 +127,6 @@ class Renderer {
 }
 
 
-
-
-
-
-
-class RayIntersection{
-	constructor(object, point, distance){
-		this.object=object
-		this.point = point
-		this.distance=distance
-	}
-
-	static none(){
-		return new RayIntersection(null, null, -1);
-	}
-
-	isEmpty(){
-		return this.object==null
-	}
-}
 
 
 
@@ -209,6 +195,28 @@ class Scene {
 
 	}
 }
+
+
+
+
+
+
+class RayIntersection{
+	constructor(object, point, distance){
+		this.object=object
+		this.point = point
+		this.distance=distance
+	}
+
+	static none(){
+		return new RayIntersection(null, null, -1);
+	}
+
+	isEmpty(){
+		return this.object==null
+	}
+}
+
 
 
 
