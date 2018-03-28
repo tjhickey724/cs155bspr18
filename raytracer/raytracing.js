@@ -124,7 +124,7 @@ class Renderer {
 					// this involves the point p, the normal n, and the lights
 					const b = scene.calculateDiffuseIntensity(p,n)
 					const color = c.scale(b).to255()
-					const theColor = Color.average(0.1,new Color(1,1,1),c.scale(b))
+					const theColor = Color.average(0.05,new Color(1,1,1),c.scale(b))
 
           this.drawPixel(i,j,theColor.to255())
         }
@@ -211,9 +211,9 @@ class Scene {
 			brightness = 1.0
 		}
 		return brightness
-
-
 	}
+
+  
 }
 
 
@@ -231,11 +231,19 @@ class Light{
 	diffuse(point,normal){
 		const lightdir = this.position.subtract(point).normalize()
 		const diffuse = lightdir.dot(normal)
+    if (diffuse < 0) return 0;
 		return diffuse
 	}
 
 	specular(point,normal,eye){
 		// we need to write this!
+    const lightv = this.position.subtract(point).normalize()
+    const eyev = eye.subtract(point).normalize()
+    const h = lightv.dot(normal)
+    const lightProj = lightv.subtract(normal.scale(h))
+    const lightvprime = lightv.subtract(lightProj.scale(2));
+    const intensity = Math.pow(lightvprime.dot(eyev),128);
+    return intensity
 	}
 }
 

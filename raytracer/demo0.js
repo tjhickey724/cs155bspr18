@@ -11,7 +11,7 @@ function runTest(){
 	scene.addObject(s1)
 	const s2 = new Sphere(new Vector3(2,0,-9),3)
 	scene.addObject(s2)
-	const light1 = new Light(new Vector3(10,10,10))
+	const light1 = new Light(new Vector3(10,10,-10))
 	scene.addLight(light1)
 	renderer.render(scene,camera)
 }
