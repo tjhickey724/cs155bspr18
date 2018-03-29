@@ -6,18 +6,28 @@ function runTest(){
 	const renderer = new Renderer(900,900)
 	const scene = new Scene('demo1')
 	const camera = new Camera()
-	camera.translateZ(100)
-	const s1 = new Sphere(new Vector3(-2,0,-8),2)
-	const s2 = new Sphere(new Vector3(2,0,-8),2)
-	const p1 = new Plane(new Vector3(0,-20,-100),new Vector3(100,0,0), new Vector3(0,100,0))
-	const p2 = new Plane(new Vector3(20,0,-100),new Vector3(0,0,100), new Vector3(0,100,0))
+	camera.translateZ(40)
+
+	const s1 = new Sphere(new Vector3(-2,0,-80),20)
+	const s2 = new Sphere(new Vector3(-50,0,-80),10)
+	const p1 = new Plane(new Vector3(0,0,-100),new Vector3(100,0,0), new Vector3(0,100,0))
+	const p2 = new Plane(new Vector3(60,0,0),new Vector3(0,0,100), new Vector3(0,100,0))
+	const light1 = new Light(new Vector3(50,50,-90))
+	const light2 = new Light(new Vector3(-50,50,-90))
+	light1.intensity = 0.2
+	light2.intensity = 0.5
+	light2.shininess = 10
+	light1.ambientLight=0
+	light2.ambientLight=0
 
 	scene.addObject(s1)
 	scene.addObject(s2)
-	scene.addLight(new Light(new Vector3(-50,200,50)))
 	scene.addObject(p1)
 	scene.addObject(p2)
-	for(let i=0; i<10;i++){
+	scene.addLight(light1)
+	scene.addLight(light2)
+
+	for(let i=0; i<0;i++){
 		const a = randNumInRange(-50,50)
 		const b = randNumInRange(-50,50)
 		const c = randNumInRange(-100,-50)
