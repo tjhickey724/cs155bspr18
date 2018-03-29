@@ -243,8 +243,16 @@ class Light{
     if (diffuse < 0) return 0;
 		return this.intensity*diffuse
 	}
+  specular(point,normal,eye){
+    const lightv = this.position.subtract(point).normalize()
+    const eyev = eye.subtract(point).normalize()
+    const h = eyev.add(lightv).normalize()
+    const bp = h.dot(normal)
+    if (bp>0) return Math.pow(bp,this.shininess)
+    else return 0
+  }
 
-	specular(point,normal,eye){
+	specular2(point,normal,eye){
 		// we need to write this!
     const lightv = this.position.subtract(point).normalize()
     const eyev = eye.subtract(point).normalize()

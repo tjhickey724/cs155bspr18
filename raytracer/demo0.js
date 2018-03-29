@@ -13,9 +13,10 @@ function runTest(){
 	scene.addObject(s2)
 	const light1 = new Light(new Vector3(10,10,-10))
 	scene.addLight(light1)
+  light1.shininess = 250
 	const light2 = new Light(new Vector3(-10,10,0))
 	light2.intensity = 0.15
-	scene.addLight(light2)
+	//scene.addLight(light2)
 	renderer.render(scene,camera)
 }
 
