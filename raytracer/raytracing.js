@@ -119,13 +119,12 @@ class Renderer {
           const obj = intersection.object
           const p = intersection.point
 					const n = intersection.normal
-          const c = obj.color(p)
+					const mat = obj.material
+
 					const e = camera.position.subtract(p).normalize()
 					// now we need to do the lighting calculations
 					// this involves the point p, the normal n, and the lights
-					const b = scene.calculateLightIntensity(p,n,e)
-					const color = c.scale(b).to255()
-					const theColor = Color.average(0.05,new Color(1,1,1),c.scale(b))
+					const theColor = scene.calculateColor(p,n,e,mat)
 
           this.drawPixel(i,j,theColor.to255())
 				//	console.dir(intersection); return
@@ -202,18 +201,15 @@ class Scene {
 
   }
 
-	calculateLightIntensity(point, normal, eye){
-		let brightness = 0
+	calculateColor(point, normal, eye, mat){
+		let theColor= new Color(0,0,0)
 		for(let light of this.lights){
-			const ambient = light.ambient()
-			const diffuse = light.diffuse(point,normal)
-			const specular = light.specular(point, normal, eye)
-			brightness += ambient+diffuse+specular
+			const ambient = light.ambient().times(mat.ambient)
+			const diffuse = light.diffuse(point,normal).times(mat.diffuse)
+			const specular = light.specular(point, normal, eye, mat.shininess).times(mat.specular)
+			theColor = theColor.add(ambient).add(diffuse).add(specular)
 		}
-		if (brightness > 1.0){
-			brightness = 1.0
-		}
-		return brightness
+		return theColor
 	}
 
 
@@ -223,28 +219,24 @@ class Scene {
 class Light{
 	constructor(position){
 		this.position = position
-		this.color = new Color(1,1,1)
-		this.shininess = 128
-		this.ambientLight = 0.05
 		this.intensity = 1.0
+		this.ambientColor = Color.WHITE.scale(0.1)
+		this.diffuseColor = Color.WHITE
+		this.specularColor = Color.WHITE
 	}
 
 	ambient(){
-		return this.intensity*this.ambientLight
-	}
-
-	setColor(r,g,b){
-		this.color = new Color(r,g,b)
+		return this.ambientColor.scale(this.intensity)
 	}
 
 	diffuse(point,normal){
 		const lightdir = this.position.subtract(point).normalize()
-		const diffuse = lightdir.dot(normal)
-    if (diffuse < 0) return 0;
-		return this.intensity*diffuse
+		let diffuse = lightdir.dot(normal)
+    if (diffuse < 0) diffuse=0
+		return this.diffuseColor.scale(this.intensity*diffuse)
 	}
 
-	specular(point,normal,eye){
+	specular(point,normal,eye, shininess){
 		// we need to write this!
     const lightv = this.position.subtract(point).normalize()
     const eyev = eye.subtract(point).normalize()
@@ -255,50 +247,11 @@ class Light{
 		const specular = lightvprime.dot(eyev)
     let brightness = 0
 		if (specular > 0 && sameSide)
-			brightness =  Math.pow(specular,this.shininess);
-    return this.intensity*brightness
+			brightness =  Math.pow(specular,shininess);
+    return this.specularColor.scale(this.intensity*brightness)
 	}
 }
 
-
-class Color {
-	// colors are rgb with values between 0.0 and 1.0
-	// c.to255()  converts this color into a Javascript 255-based color
-	// e.g.  rgb(200,255,0)
-
-	constructor(r,g,b){
-		this.r=r
-		this.g=g
-		this.b=b
-	}
-
-	scale(k){
-		return new Color(this.r*k, this.g*k, this.b*k)
-	}
-
-	add(c){
-		return new Color(this.r+c.r,this.g+c.g,this.b+c.b)
-	}
-
-	static average(w,c1,c2){
-		// this forms the weighted average of the two colors c1,c2
-		return c1.scale(w).add(c2.scale(1-w))
-	}
-
-	to255(){
-		const r = Math.floor(255*(clamp(this.r,0,1)))
-		const g = Math.floor(255*(clamp(this.g,0,1)))
-		const b = Math.floor(255*(clamp(this.b,0,1)))
-		const s = "rgb("+r+","+g+","+b+")"
-		return s
-	}
-}
-
-function clamp(x,a,b){
-	if (x<a) return a
-	if (x>b) return b
-	return x
-}
 
 
 
@@ -317,98 +270,5 @@ class RayIntersection{
 
   isEmpty(){
     return this.object==null
-  }
-}
-
-
-
-
-class Sphere {
-  constructor(c,r){
-    this.center = c
-    this.radius = r
-  }
-
-  intersect(r){
-    // intersect the ray r with the sphere
-    const a = (r.d).dot(r.d)
-    const pc = r.p.subtract(this.center)
-    const b = 2*(r.d.dot(pc))
-    const c = pc.dot(pc) - this.radius*this.radius
-    const d = b*b-4*a*c
-    if (d<0) return []
-    const t1 = (-b - Math.sqrt(d))/(2*a)
-    const t2 = (-b + Math.sqrt(d))/(2*a)
-    const p1 = r.atTime(t1);
-    const p2 = r.atTime(t2);
-
-    if (d==0)
-			if (t1>0) {
-				const normal1 = p1.subtract(this.center).normalize();
-				const distance1 = p1.subtract(r.p).length();
-			    return new RayIntersection(this, p1, distance1, normal1)
-			} else
-          return RayIntersection.none()
-
-    if (t1>0) {
-			const normal1 = p1.subtract(this.center).normalize();
-			const distance1 = p1.subtract(r.p).length();
-      return new RayIntersection(this, p1, distance1, normal1)
-    }else if (t2>0){
-			const normal2 = p2.subtract(this.center).normalize();
-			const distance2 = p2.subtract(r.p).length();
-      return new RayIntersection(this, p2, distance2, normal2)
-    }else
-      return RayIntersection.none()
-  }
-
-
-	color(p){
-		// for now we use the uv coordinates to set the color
-		const z = this.uv(p)
-		return  new Color(1,1,1) //z.u, 0.5, z.v)
-
-	}
-
-	uv(p){
-		// returns a uv coordinate for the point in [0,1]x[0,1]
-		// similar to latitude and longitude
-		const pc = p.subtract(this.center)
-		const phi = Math.asin(pc.y/this.radius)
-		const theta = Math.atan2(pc.z,pc.x)
-		return {u:0.5*theta/Math.PI+0.5, v:phi/Math.PI+0.5}
-	}
-
-}
-
-
-
-class Plane {
-  constructor(q,u,v){
-    this.position = q
-    this.u=u;
-    this.v=v;
-    this.normal = u.cross(v).normalize()
-  }
-
-  intersect(ray){
-    const t = this.position.subtract(ray.p).dot(this.normal)/
-              ray.d.dot(this.normal)
-
-    if (t>0){
-      const point = ray.atTime(t)
-			const distance = point.subtract(ray.p).length()
-      return new RayIntersection(this, point, distance, this.normal)
-    } else {
-      return RayIntersection.none()
-    }
-
-  }
-
-  color(p){
-    // here we create a computed texture for the plane
-    const r = Math.abs(p.dot(this.u)%1)
-    const g = Math.abs(p.dot(this.v)%1)
-    return new Color(1,1,1); //r,g,1-r-g)
   }
 }

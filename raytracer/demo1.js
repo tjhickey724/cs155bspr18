@@ -6,19 +6,20 @@ function runTest(){
 	const renderer = new Renderer(900,900)
 	const scene = new Scene('demo1')
 	const camera = new Camera()
-	camera.translateZ(40)
+	camera.translateZ(120)
 
 	const s1 = new Sphere(new Vector3(-2,0,-80),20)
 	const s2 = new Sphere(new Vector3(-50,0,-80),10)
 	const p1 = new Plane(new Vector3(0,0,-100),new Vector3(100,0,0), new Vector3(0,100,0))
 	const p2 = new Plane(new Vector3(60,0,0),new Vector3(0,0,100), new Vector3(0,100,0))
-	const light1 = new Light(new Vector3(50,50,-90))
-	const light2 = new Light(new Vector3(-50,50,-90))
-	light1.intensity = 0.2
-	light2.intensity = 0.5
-	light2.shininess = 10
-	light1.ambientLight=0
-	light2.ambientLight=0
+	const light1 = new Light(new Vector3(0,70,-20))
+	const light2 = new Light(new Vector3(-50,50,-50))
+	light1.intensity = 0.9
+	light2.intensity = 0.9
+	light1.diffuseColor = Color.WHITE.scale(0.4)
+	light1.specularColor = Color.RED
+	light2.diffuseColor = Color.BLUE.scale(0.2)
+	light2.specularColor = Color.BLUE
 
 	scene.addObject(s1)
 	scene.addObject(s2)
