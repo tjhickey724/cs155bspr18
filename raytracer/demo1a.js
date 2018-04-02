@@ -8,8 +8,10 @@ function runTest(){
 	const camera = new Camera()
 	camera.translateZ(120)
 
-	const s1 = new Sphere(new Vector3(-2,0,-80),20)
-	const s2 = new Sphere(new Vector3(-50,0,-80),10)
+	//const s1 = new Sphere(new Vector3(-2,0,-80),20)
+	//const s2 = new Sphere(new Vector3(-50,0,-80),10)
+	const s1 = new Sphere(new Vector3(0,0,0),1)
+	const s2 = new Sphere(new Vector3(0,0,0),1)
 	const p1 = new Plane(new Vector3(0,0,-100),new Vector3(100,0,0), new Vector3(0,100,0))
 	const p2 = new Plane(new Vector3(60,0,0),new Vector3(0,0,100), new Vector3(0,100,0))
 	const light1 = new Light(new Vector3(0,70,-20))
@@ -27,6 +29,16 @@ function runTest(){
 	scene.addObject(p2)
 	scene.addLight(light1)
 	scene.addLight(light2)
+
+	s1.transform =
+		 s1.transform
+				.translate(new Vector3(-2,0,-80))
+				.scale(new Vector3(20,20,20))
+
+	s2.transform =
+		s2.transform
+			.translate(new Vector3(-50,0,-80))
+			.scale(new Vector3(10,10,10))
 
 	for(let i=0; i<0;i++){
 		const a = randNumInRange(-50,50)

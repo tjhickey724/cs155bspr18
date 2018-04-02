@@ -9,15 +9,46 @@ class Object3D {
 	constructor(){
 		this.position = new Vector3(0,0,0)
 		this.material = Material.WHITEMAT
+		this.transform = new Transform()
 	}
 
-
-	intersect(ray){
-		const tinv = transform.inverse();
-		const rayIntersection = this.intersect0(ray.applyTransform(tinv))
-		const intersection = rayIntersection.applyTransform(transform)
+	intersectRay(ray){
+		const tinv = this.transform.inverse();
+		const intersectionInfo = this.intersect(ray.applyTransform(tinv))
+		if (intersectionInfo.empty())
+			return intersectionInfo
+		else
+			return intersectionInfo.applyTransform(this.transform)
 	}
 }
+
+
+class RayIntersection{
+  constructor(object, point, normal){
+    this.object=object
+    this.point = point
+    this.normal = normal
+  }
+
+  static none(){
+    return new RayIntersection(null, null, null);
+  }
+
+	empty(){
+		return this.object==null
+	}
+
+	applyTransform(t){
+		const point1 = t.transformVec3(this.point)
+		const normal = t.inverse().transpose().transformVec3a(this.normal).normalize()
+		return new RayIntersection(this.object,point1,normal)
+	}
+
+  isEmpty(){
+    return this.object==null
+  }
+}
+
 
 class Sphere extends Object3D{
   constructor(c,r){
@@ -35,7 +66,7 @@ class Sphere extends Object3D{
     const b = 2*(r.d.dot(pc))
     const c = pc.dot(pc) - this.radius*this.radius
     const d = b*b-4*a*c
-    if (d<0) return []
+    if (d<0) return RayIntersection.none()
     const t1 = (-b - Math.sqrt(d))/(2*a)
     const t2 = (-b + Math.sqrt(d))/(2*a)
     const p1 = r.atTime(t1);
@@ -44,30 +75,19 @@ class Sphere extends Object3D{
     if (d==0)
 			if (t1>0) {
 				const normal1 = p1.subtract(this.center).normalize();
-				const distance1 = p1.subtract(r.p).length();
-			    return new RayIntersection(this, p1, distance1, normal1)
+			    return new RayIntersection(this, p1,  normal1)
 			} else
           return RayIntersection.none()
 
     if (t1>0) {
 			const normal1 = p1.subtract(this.center).normalize();
-			const distance1 = p1.subtract(r.p).length();
-      return new RayIntersection(this, p1, distance1, normal1)
+      return new RayIntersection(this, p1,  normal1)
     }else if (t2>0){
 			const normal2 = p2.subtract(this.center).normalize();
-			const distance2 = p2.subtract(r.p).length();
-      return new RayIntersection(this, p2, distance2, normal2)
+      return new RayIntersection(this, p2, normal2)
     }else
       return RayIntersection.none()
   }
-
-
-	color(p){
-		// for now we use the uv coordinates to set the color
-		const z = this.uv(p)
-		return  new Color(1,1,1) //z.u, 0.5, z.v)
-
-	}
 
 	uv(p){
 		// returns a uv coordinate for the point in [0,1]x[0,1]
@@ -82,8 +102,9 @@ class Sphere extends Object3D{
 
 
 
-class Plane {
+class Plane extends Object3D {
   constructor(q,u,v){
+		super()
     this.position = q
     this.u=u;
     this.v=v;
@@ -98,18 +119,17 @@ class Plane {
 
     if (t>0){
       const point = ray.atTime(t)
-			const distance = point.subtract(ray.p).length()
-      return new RayIntersection(this, point, distance, this.normal)
+      return new RayIntersection(this, point, this.normal)
     } else {
       return RayIntersection.none()
     }
 
   }
 
-  color(p){
-    // here we create a computed texture for the plane
-    const r = Math.abs(p.dot(this.u)%1)
-    const g = Math.abs(p.dot(this.v)%1)
-    return new Color(1,1,1); //r,g,1-r-g)
+  uv(p){
+    // here we generate uv coordinates for the plane
+    const u = Math.abs(p.dot(this.u)%1)
+    const v = Math.abs(p.dot(this.v)%1)
+    return {u:u, v:v};
   }
 }

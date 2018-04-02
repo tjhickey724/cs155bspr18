@@ -9,8 +9,13 @@ function runTest(){
 	camera.translateZ(10)
 
 	const s1 = new Sphere(new Vector3(-2,0,-8),2)
-	s1.material = new Material(Color.WHITE,Color.RED,Color.WHITE)
+	s1.material = new Material(Color.WHITE,Color.WHITE,Color.WHITE)
 	s1.material.shininess = 100
+	s1.transform =
+	   s1.transform
+		 		.translate(new Vector3(-2,-1,0))
+				.rotateZ(Math.PI/4)
+				.scale(new Vector3(3,1.5,1))
 	scene.addObject(s1)
 
 	s2 = new Sphere(new Vector3(2,2,-12),3)
