@@ -1,0 +1,5 @@
+This version incorporates transformations into all Object3D elements
+which allows one to translate, rotate, and scale the elements.
+This allows us to simplify the code for geometric objects to that
+they are centered at the origin (0,0,0) in a default orientation,
+just as with ThreeJS

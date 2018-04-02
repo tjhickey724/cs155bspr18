@@ -33,6 +33,13 @@ class Transform {
 		return t
 	}
 
+	preTranslate(vec3){
+		let t = new Transform();
+		t.mat = Matrix.translation(vec3).multiply(this.mat)
+		t.inv = this.inv.multiply(Matrix.translation(vec3.scale(-1)))
+		return t
+	}
+
 	rotateX(angle){
 		let t = new Transform();
 		t.mat = this.mat.multiply(Matrix.rotateX(angle))

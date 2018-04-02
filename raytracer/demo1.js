@@ -3,10 +3,14 @@
 function runTest(){
 	canvas.width=900
 	canvas.height=900
-	const renderer = new Renderer(300,300)
+	const renderer = new Renderer(900,900)
 	const scene = new Scene('demo1')
 	const camera = new Camera()
-	camera.translateZ(120)
+	//camera.translateZ(120)
+	camera.transform =
+	  camera.transform
+		   .translate(new Vector3(0,0,80))
+			 .rotateY(Math.PI/180*(-15))
 
 	const s1 = new Sphere(new Vector3(-2,0,-80),20)
 	const s2 = new Sphere(new Vector3(-50,0,-80),10)

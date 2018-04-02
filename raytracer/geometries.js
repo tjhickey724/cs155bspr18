@@ -4,23 +4,6 @@ Sphere
 Plane
 and it relies on the Vector3 and Ray3 classes
 */
-class Object3D {
-
-	constructor(){
-		this.position = new Vector3(0,0,0)
-		this.material = Material.WHITEMAT
-		this.transform = new Transform()
-	}
-
-	intersectRay(ray){
-		const tinv = this.transform.inverse();
-		const intersectionInfo = this.intersect(ray.applyTransform(tinv))
-		if (intersectionInfo.empty())
-			return intersectionInfo
-		else
-			return intersectionInfo.applyTransform(this.transform)
-	}
-}
 
 
 class RayIntersection{
@@ -51,10 +34,10 @@ class RayIntersection{
 
 
 class Sphere extends Object3D{
-  constructor(c,r){
+  constructor(){
 		super()
-    this.center = c
-    this.radius = r
+    this.center = new Vector3(0,0,0)
+    this.radius = 1
 		this.material = new Material(Color.WHITE, Color.WHITE, Color.WHITE, 255)
 
   }
