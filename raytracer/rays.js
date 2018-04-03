@@ -13,11 +13,12 @@ class Ray3 {
   }
 
 	applyTransform(t){
-		const q = this.p.add(this.d)
+		//const q = this.p.add(this.d)
 		const pt = t.transformVec3(this.p)
-		const qt = t.transformVec3(q)
-		const dt = qt.subtract(pt)
-		return new Ray3(pt,dt)
+		//const qt = t.transformVec3(q)
+		//const dt = qt.subtract(pt)
+		const d1 = t.transformVec3a(this.d)
+		return new Ray3(pt,d1)
 	}
 
   toString(){
