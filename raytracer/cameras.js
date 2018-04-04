@@ -11,7 +11,7 @@ class Camera {
     //this.position.z += k
   }
 
-	translateZ(q){
+	translateZ(k){
 		this.transform = this.transform.translate(new Vector3(0,0,k))
 	}
 
@@ -27,8 +27,8 @@ class Camera {
 		const zaxis = thispos.subtract(pos).normalize()
 		const xaxis = this.up.cross(zaxis).normalize()
 		const yaxis = zaxis.cross(xaxis)
-		
-		console.dir(['xyz axes',xaxis,yaxis,zaxis])
+
+		//console.dir(['xyz axes',xaxis,yaxis,zaxis])
 		const trans0 = new Matrix(4,4,
 		 [[xaxis.x,yaxis.x,zaxis.x,   thispos.x],
 		  [xaxis.y,yaxis.y,zaxis.y,   thispos.y],
@@ -45,7 +45,7 @@ class Camera {
 		const transform = new Transform()
 		transform.mat = trans0
 		transform.inv = trans1
-		console.dir(['transform',transform])
+		//console.dir(['transform',transform])
 		this.transform = transform
 
 	}

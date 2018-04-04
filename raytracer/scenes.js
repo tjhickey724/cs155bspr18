@@ -1,18 +1,3 @@
-/*
-This file contains the definition of the following classes
-
-Renderer
-RayIntersection
-Camera
-Scene
-Light
-*/
-
-
-
-
-
-
 
 
 class Scene {

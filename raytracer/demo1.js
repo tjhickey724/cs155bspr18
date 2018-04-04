@@ -6,31 +6,51 @@ function runTest(){
 	const renderer = new Renderer(900,900)
 	const scene = new Scene('demo1')
 	const camera = new Camera()
-	//camera.translateZ(120)
-	camera.transform =
-	  camera.transform
-		   .translate(new Vector3(0,0,80))
-			 .rotateY(Math.PI/180*(-15))
 
-	const s1 = new Sphere(new Vector3(-2,0,-80),20)
-	const s2 = new Sphere(new Vector3(-50,0,-80),10)
-	const p1 = new Plane(new Vector3(0,0,-100),new Vector3(100,0,0), new Vector3(0,100,0))
-	const p2 = new Plane(new Vector3(60,0,0),new Vector3(0,0,100), new Vector3(0,100,0))
-	const light1 = new Light(new Vector3(0,70,-20))
-	const light2 = new Light(new Vector3(-50,50,-50))
+
+	const s1 = new Sphere()
+  s1.rotateZ(Math.PI/4)
+	  .scale(new Vector3(5,10,1))
+    .translate(new Vector3(0,2,-10))
+	scene.addObject(s1)
+
+	const s2 = new Sphere()
+	s2.scale(new Vector3(5,5,5))
+    .translate(new Vector3(5,0,0))
+	scene.addObject(s2)
+
+	const p1 = new Square()
+	p1.scale(new Vector3(10,5,1))
+	p1.translate(new Vector3(0,0,0))
+	scene.addObject(p1)
+
+	const p1a = new Square()
+	p1a.scale(new Vector3(10,5,1))
+	p1a.translate(new Vector3(0,-1.1,0))
+	scene.addObject(p1a)
+
+	const p2 = new Square()
+	p2.scale(new Vector3(5,10,1))
+	//p2.rotateY(Math.PI/4)
+	p2.material.diffuse = new Color(1,1,0)
+	p2.translate(new Vector3(-1,1,0))
+	scene.addObject(p2)
+
+
+	const light1 = new Light(new Vector3(0,0,20))
+	const light2 = new Light(new Vector3(-50,50,50))
 	light1.intensity = 0.9
 	light2.intensity = 0.9
-	light1.diffuseColor = Color.WHITE.scale(0.4)
+	light1.diffuseColor = Color.GREEN
 	light1.specularColor = Color.RED
-	light2.diffuseColor = Color.BLUE.scale(0.2)
-	light2.specularColor = Color.BLUE
+	light2.diffuseColor = Color.BLUE
+	light2.specularColor = Color.WHITE
 
-	scene.addObject(s1)
-	scene.addObject(s2)
-	scene.addObject(p1)
-	scene.addObject(p2)
+
 	scene.addLight(light1)
 	scene.addLight(light2)
+	camera.translate(new Vector3(0,10,30))
+	camera.lookAt(new Vector3(0,0,0))
 
 	for(let i=0; i<0;i++){
 		const a = randNumInRange(-50,50)

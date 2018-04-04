@@ -21,6 +21,8 @@ class Renderer {
 
   render(scene,camera){
     for(let i=0;i<this.width;i++){
+			document.getElementById('status').innerHTML= ""+i+"/"+this.width
+			if (i%1==0) console.log('rendered '+i+' of '+this.width)
       for(let j=0; j<this.height; j++){
         const x = 2*i/this.width-1 // x goes from -1 to 1 in this.width steps
         const y = 2*j/this.height-1 // y goes from -1 to 1 in this.height steps
@@ -33,12 +35,28 @@ class Renderer {
           const obj = intersection.object
           const p = intersection.point
 					const n = intersection.normal
+					const uv = intersection.uv
 					const mat = obj.material
+
 
 					const e = camera.position.subtract(p).normalize()
 					// now we need to do the lighting calculations
 					// this involves the point p, the normal n, and the lights
-					const theColor = scene.calculateColor(p,n,e,mat)
+					let theColor = scene.calculateColor(p,n,e,mat)
+
+					let textureColor = new Color(0,0,0)
+					if (mat.textureWeight>0){
+						//console.dir([intersection,obj,mat,uv])
+						textureColor = mat.texture.pixel(uv.u,uv.v)
+						theColor =
+							Color.average(mat.textureWeight,textureColor,theColor)
+					}
+
+					/*
+						insert the code here to get the color associated to
+						intersection.object.uv(intersection.point)
+						the average that with the basic material color
+					*/
 
           this.drawPixel(i,j,theColor.to255())
 				//	console.dir(intersection); return

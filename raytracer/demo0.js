@@ -10,7 +10,7 @@ function runTest(){
 	const s1 = new Sphere()
 	s1.material = new Material(Color.WHITE,Color.BLUE,Color.WHITE)
 	s1.material.shininess = 100
-	s1.translate(new Vector3(0,8,-10))
+	s1.translate(new Vector3(0,0,0))
 		.scale(new Vector3(3,3,3))
 	scene.addObject(s1)
 

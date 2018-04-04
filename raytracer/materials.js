@@ -56,6 +56,8 @@ class Material{
 		this.diffuse = diffuse
 		this.specular = specular
 		this.shininess = shininess
+		this.texture='none'
+		this.textureWeight=0
 	}
 
 	getColor(light){
@@ -67,6 +69,10 @@ class Material{
 	}
 
 	static get WHITEMAT() {return whiteMaterial}
+
+	static standard(){
+		return new Material(new Color(0.1,0.1,0.1), new Color(1,1,1), new Color(1,1,1), 256)
+	}
 
 }
 

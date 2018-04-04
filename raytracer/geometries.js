@@ -6,33 +6,6 @@ and it relies on the Vector3 and Ray3 classes
 */
 
 
-class RayIntersection{
-  constructor(object, point, normal){
-    this.object=object
-    this.point = point
-    this.normal = normal
-  }
-
-  static none(){
-    return new RayIntersection(null, null, null);
-  }
-
-	empty(){
-		return this.object==null
-	}
-
-	applyTransform(t){
-		const point1 = t.transformVec3(this.point)
-		const normal = t.inverse().transpose().transformVec3a(this.normal).normalize()
-		return new RayIntersection(this.object,point1,normal)
-	}
-
-  isEmpty(){
-    return this.object==null
-  }
-}
-
-
 class Sphere extends Object3D{
   constructor(){
 		super()
@@ -58,16 +31,16 @@ class Sphere extends Object3D{
     if (d==0)
 			if (t1>0) {
 				const normal1 = p1.subtract(this.center).normalize();
-			    return new RayIntersection(this, p1,  normal1)
+			    return new RayIntersection(this, p1,  normal1, this.uv(p1))
 			} else
           return RayIntersection.none()
 
     if (t1>0) {
 			const normal1 = p1.subtract(this.center).normalize();
-      return new RayIntersection(this, p1,  normal1)
+      return new RayIntersection(this, p1,  normal1, this.uv(p1))
     }else if (t2>0){
 			const normal2 = p2.subtract(this.center).normalize();
-      return new RayIntersection(this, p2, normal2)
+      return new RayIntersection(this, p2, normal2, this.uv(p2))
     }else
       return RayIntersection.none()
   }
@@ -78,7 +51,7 @@ class Sphere extends Object3D{
 		const pc = p.subtract(this.center)
 		const phi = Math.asin(pc.y/this.radius)
 		const theta = Math.atan2(pc.z,pc.x)
-		return {u:0.5*theta/Math.PI+0.5, v:phi/Math.PI+0.5}
+		return {u:1-(0.5*theta/Math.PI+0.5), v:(phi/Math.PI+0.5)}
 	}
 
 }
@@ -86,23 +59,28 @@ class Sphere extends Object3D{
 
 
 class Plane extends Object3D {
-  constructor(q,u,v){
+  constructor(){
 		super()
-    this.position = q
-    this.u=u;
-    this.v=v;
-    this.normal = u.cross(v).normalize()
+    this.u=new Vector3(1,0,0)
+    this.v=new Vector3(0,1,0)
+    this.normal = this.u.cross(this.v).normalize()
 		this.material = new Material(Color.WHITE, Color.WHITE, Color.WHITE, 255)
 
   }
 
   intersect(ray){
+		let n = this.normal
+		if (ray.d.dot(n)<0)
+		  n = n.scale(-1)  // can look at both sides of a plane
     const t = this.position.subtract(ray.p).dot(this.normal)/
               ray.d.dot(this.normal)
 
     if (t>0){
       const point = ray.atTime(t)
-      return new RayIntersection(this, point, this.normal)
+			//console.dir(['in Plane',this,point,this.uv(point)])
+      const ri = new RayIntersection(this, point, this.normal, this.uv(point))
+			//console.dir(ri)
+			return ri
     } else {
       return RayIntersection.none()
     }
@@ -111,8 +89,31 @@ class Plane extends Object3D {
 
   uv(p){
     // here we generate uv coordinates for the plane
-    const u = Math.abs(p.dot(this.u)%1)
-    const v = Math.abs(p.dot(this.v)%1)
+		// these map every point to a (u,v) value in [0,1]x[0,1]
+    const u = (1 + p.dot(this.u)%1) %1
+    const v = (1 + p.dot(this.v)%1) %1
     return {u:u, v:v};
   }
+}
+
+class Square extends Plane {
+	constructor(){
+		super()
+	}
+
+	intersect(ray){
+		const ri = super.intersect(ray)
+		const p = ri.point
+		if (p==null) return ri
+		const pu = p.dot(this.u)
+		const pv = p.dot(this.v)
+		if (pu<0 || pu>1 || pv<0 || pv>1){
+		 return RayIntersection.none()
+	  }
+		else {
+			//console.dir(['in Square',p,this.uv(p)])
+			//console.log(nothing)
+			return ri
+		}
+	 }
 }

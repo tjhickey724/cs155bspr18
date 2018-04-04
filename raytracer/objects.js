@@ -8,7 +8,7 @@ class Object3D {
 
 	get position(){
 		const pos = this.transform.transformVec3(new Vector3(0,0,0))
-		console.log("pos = "+pos)
+		//console.log("pos = "+pos)
 		return pos
 	}
 
