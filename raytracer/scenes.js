@@ -43,13 +43,23 @@ class Scene {
 
   }
 
-	calculateColor(point, normal, eye, mat){
+	reaches(light,point){
+		const lightdir = point.subtract(light.position);
+		const lightray = new Ray3(light.position,lightdir)
+		const ri = this.intersect(lightray);
+		if (ri.point== null) return false
+		return (ri.point.subtract(point).length()<0.01)
+	}
+
+	calculateColor(point, normal, eye, mat, textureColor){
 		let theColor= new Color(0,0,0)
 		for(let light of this.lights){
-			const ambient = light.ambient().times(mat.ambient)
-			const diffuse = light.diffuse(point,normal).times(mat.diffuse)
-			const specular = light.specular(point, normal, eye, mat.shininess).times(mat.specular)
-			theColor = theColor.add(ambient).add(diffuse).add(specular)
+			if (this.reaches(light, point)){
+				const ambient = light.ambient().times(mat.ambient)
+				const diffuse = light.diffuse(point,normal).times(mat.diffuse).times(textureColor)
+				const specular = light.specular(point, normal, eye, mat.shininess).times(mat.specular)
+				theColor = theColor.add(ambient).add(diffuse).add(specular)//.add(textureColor)
+			}
 		}
 		return theColor
 	}

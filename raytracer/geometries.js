@@ -70,10 +70,10 @@ class Plane extends Object3D {
 
   intersect(ray){
 		let n = this.normal
-		if (ray.d.dot(n)<0)
+		if (ray.d.dot(n)>0)
 		  n = n.scale(-1)  // can look at both sides of a plane
-    const t = this.position.subtract(ray.p).dot(this.normal)/
-              ray.d.dot(this.normal)
+    const t = this.position.subtract(ray.p).dot(n)/
+              ray.d.dot(n)
 
     if (t>0){
       const point = ray.atTime(t)

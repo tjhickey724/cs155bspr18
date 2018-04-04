@@ -46,10 +46,10 @@ function runTest(){
 
 	scene.addObject(s2)
 
-	const p1 = new Square()
+	const p1 = new Plane()
 	p1.material = mat1
-	p1.rotateX(Math.PI/2)
-	  .translate(new Vector3(0,-0.05,10))
+	p1.rotateX(-1*Math.PI/2)
+	  .translate(new Vector3(0,0.05,0))
 		.scale(new Vector3(100,100,100))
 
 
@@ -57,20 +57,20 @@ function runTest(){
 	scene.addObject(p1)
 
 
-	const light1 = new Light(new Vector3(5,5,10))
-	light1.intensity = 0.5
+	const light1 = new Light(new Vector3(5,15,10))
+	light1.intensity = 1
 	light1.diffuseColor = Color.WHITE
 	light1.specularColor = Color.RED
 	scene.addLight(light1)
 
 	const light2 = new Light(new Vector3(0,50,50))
-	light2.intensity = 0.5
+	light2.intensity = 1
 	light2.diffuseColor = Color.WHITE
 	light2.specularColor = Color.BLUE
 	scene.addLight(light2)
 
 	const camera = new Camera()
-	camera.translate(new Vector3(-5,2,1))
+	camera.translate(new Vector3(-7,5,-7))
 	camera.lookAt(s1.position)
 
 	renderer.render(scene,camera)

@@ -42,15 +42,19 @@ class Renderer {
 					const e = camera.position.subtract(p).normalize()
 					// now we need to do the lighting calculations
 					// this involves the point p, the normal n, and the lights
-					let theColor = scene.calculateColor(p,n,e,mat)
 
-					let textureColor = new Color(0,0,0)
+
+
+
+
+
+					let textureColor = new Color(1,1,1)
 					if (mat.textureWeight>0){
 						//console.dir([intersection,obj,mat,uv])
 						textureColor = mat.texture.pixel(uv.u,uv.v)
-						theColor =
-							Color.average(mat.textureWeight,textureColor,theColor)
 					}
+					let theColor = scene.calculateColor(p,n,e,mat,textureColor)
+					//theColor =Color.average(mat.textureWeight,textureColor,theColor)
 
 					/*
 						insert the code here to get the color associated to
