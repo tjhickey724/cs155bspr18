@@ -47,3 +47,20 @@ class Object3D {
 	}
 
 }
+
+class Group extends Object3D {
+	constructor(){
+		super()
+		this.objects = []
+		this.transform = new Transform()
+	}
+
+	addObject(obj){
+		this.objects.push(obj)
+	}
+
+	intersect(ray){
+		return Scene.intersectObjects(ray,this.objects)
+	}
+
+}

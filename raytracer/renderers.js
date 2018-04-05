@@ -5,6 +5,7 @@ class Renderer {
     this.width = w
     this.height = h
 		this.id = id || 'canvas'
+		this.depth = 1
   }
 
   drawPixel(i,j,c){
@@ -28,46 +29,8 @@ class Renderer {
         const x = 2*i/this.width-1 // x goes from -1 to 1 in this.width steps
         const y = 2*j/this.height-1 // y goes from -1 to 1 in this.height steps
         const r = camera.createRay(x,y) // this creates the ray for pixel (i,j)
-        const intersection = scene.intersect(r)
-        if (intersection.isEmpty()){
-          this.drawPixel(i,j,'rgb(0,0,0)')
-        }
-        else {
-          const obj = intersection.object
-          const p = intersection.point
-					const n = intersection.normal
-					const uv = intersection.uv
-					const mat = obj.material
-
-
-					const e = camera.position.subtract(p).normalize()
-					// now we need to do the lighting calculations
-					// this involves the point p, the normal n, and the lights
-
-
-
-
-
-
-					let textureColor = new Color(1,1,1)
-					if (mat.textureWeight>0){
-						//console.dir([intersection,obj,mat,uv])
-						textureColor = mat.texture.pixel(uv.u,uv.v)
-
-					}
-					//if (Math.random()>0.01) console.dir([i,j,textureColor])
-					let theColor = scene.calculateColor(p,n,e,mat,textureColor)
-					//theColor =Color.average(mat.textureWeight,textureColor,theColor)
-
-					/*
-						insert the code here to get the color associated to
-						intersection.object.uv(intersection.point)
-						the average that with the basic material color
-					*/
-
-          this.drawPixel(i,j,theColor.to255())
-				//	console.dir(intersection); return
-        }
+				const pixelColor = scene.getColorForRay(r,this.depth)
+				this.drawPixel(i,j,pixelColor.to255())
       }
     }
   }

@@ -43,12 +43,14 @@ class Color {
 	static get RED(){return red	}
 	static get GREEN(){return green	}
 	static get BLUE(){return blue	}
+	static get BLACK(){return black	}
 }
 
 const white =    new Color(1,1,1)
 const red =      new Color(1,0,0)
 const green =    new Color(0,1,0)
 const blue =     new Color(0,0,1)
+const black =    new Color(0,0,0)
 
 class Material{
 	constructor(ambient, diffuse, specular, shininess){
@@ -58,6 +60,7 @@ class Material{
 		this.shininess = shininess
 		this.texture='none'
 		this.textureWeight=0
+		this.reflectivity=0
 	}
 
 	getColor(light){
@@ -71,12 +74,12 @@ class Material{
 	static get WHITEMAT() {return whiteMaterial}
 
 	static standard(){
-		return new Material(new Color(0.1,0.1,0.1), new Color(1,1,1), new Color(1,1,1), 256)
+		return new Material(Color.BLACK, new Color(1,1,1), new Color(1,1,1), 256)
 	}
 
 }
 
-const whiteMaterial = new Material(Color.WHITE, Color.WHITE, Color.WHITE, 255)
+const whiteMaterial = new Material(Color.BLACK, Color.WHITE, Color.WHITE, 255)
 
 
 

@@ -15,9 +15,53 @@ class Scene {
     this.lights.push(x)
   }
 
-  intersect(ray){
+	getColorForRay(ray,depth){
+		const intersection = this.intersect(ray)
+		//if (Math.random()<0.001) console.dir([ray,intersection])
+		if (intersection.isEmpty()){
+			return(Color.BLACK)
+		} else {
+			const obj = intersection.object
+			const p = intersection.point
+			const n = intersection.normal
+			const uv = intersection.uv
+			const mat = obj.material
+			const e = ray.p.subtract(p).normalize()
+
+			let textureColor = new Color(1,1,1)
+			if (mat.texture!='none'){
+				textureColor = mat.texture.pixel(uv.u,uv.v)
+			}
+			let theColor = this.calculateColor(p,n,e,mat,textureColor)
+
+			if (depth > 1 && mat.reflectivity >0) {
+				const ray1 = this.reflectionRay(ray,n,p)
+				//console.dir(['ray1',ray1,ray,n,p])
+				//console.log(unknown)
+				let color2 = this.getColorForRay(ray1,depth-1)
+				//console.dir(['gCFR',mat.reflectivity,theColor,color2])
+
+				theColor = Color.average(mat.reflectivity,color2,theColor)
+			}
+			return theColor
+		}
+	}
+
+	reflectionRay(ray,n,p) {
+		let alpha = n.scale(n.dot(ray.d))
+		let d1 = ray.d.subtract(alpha.scale(2)).normalize()
+		let p1 = p.add(d1.scale(0.001))
+		return new Ray3(p1,d1)
+	}
+
+
+	intersect(ray) {
+		return Scene.intersectObjects(ray,this.objects)
+	}
+
+  static intersectObjects(ray,objects){
     // intersect the ray with each object
-    let z = this.objects.map(
+    let z = objects.map(
       function(x){
         return x.intersectRay(ray)});
     // throw out the non-intersections
@@ -42,6 +86,7 @@ class Scene {
     return minIntersection
 
   }
+
 
 	reaches(light,point){
 		const lightdir = point.subtract(light.position);
