@@ -15,12 +15,12 @@ class Texture {
 			canvas.width = img.width
 			canvas.height = img.height
 			context.drawImage(img,0,0)
-			console.dir(context)
+			//console.dir(context)
 			texture.context = context
 			texture.img = img
 			texture.imageData = context.getImageData(0,0,img.width,img.height)
 
-			console.dir(['in loading',texture,this])
+			//console.dir(['in loading',texture,this])
 
 		}
 	}

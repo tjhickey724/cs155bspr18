@@ -16,8 +16,8 @@ function runTest(){
 	canvas3.height=screenH
 	canvas4.width=screenW
 	canvas4.height=screenH
-	imageW=600
-	imageH=600
+	imageW=100
+	imageH=100
 	const rendererFront = new Renderer(imageW,imageH,'canvas1')
 	const rendererRight = new Renderer(imageW,imageH,'canvas2')
 	const rendererTop = new Renderer(imageW,imageH, 'canvas3')
@@ -72,20 +72,12 @@ function runTest(){
 	const d = 4
 	const g = 8
 
-	const ground = new Square() // Rectangle(g,g)
+	const ground = new Square()
 	ground.material = mat0
 	ground
-		//.translate(new Vector3(0,h,0))
   	.scale(new Vector3(g,1,g))
-		//.translate(new Vector3(0,2,-3))
 	  .rotateX(0.5*Math.PI)
 		.translate(new Vector3(-1/2,-1/2,0))
-		//.translate(new Vector3(0,-1/2,0))
-		//.translate(new Vector3(0,0,-1/2))
-		//.translate(new Vector3(-1/2,0,0))
-
-		//.scale(new Vector3(g,g,g))
-	console.dir(ground)
 	scene.addObject(ground)
 
 	const back = new Square()
@@ -96,34 +88,13 @@ function runTest(){
 	const left = new Square()
 	left.material = mat2
 	left.translate(new Vector3(0,0,0))
-	  .rotateY(-0.5*Math.PI)
-		.scale(new Vector3(d,h,1))
+	left.rotateY(-0.5*Math.PI)
+	left.scale(new Vector3(d,h,1))
+	left.translate(new Vector3(0,0.5,0))
 	scene.addObject(left)
 
-	const p1a = new Square()
-	p1a.material = mat0
-	p1a//.translate(new Vector3(w,0,0))
-	   .rotateX(-0.5*Math.PI)
-		 .scale(new Vector3(d,h,1))
 
-		//.scale(new Vector3(100,100,1))
-	//scene.addObject(p1a)
 
-	const p2 = new Square()
-	p2.material = mat1
-	p2.translate(new Vector3(1,0,0))
-	  .rotateY(0.25*Math.PI)
-		.scale(new Vector3(100,100,1))
-	//scene.addObject(p2)
-
-	const p3 = new Square()
-	p3.material = mat1
-	p3
-		.rotateX(Math.PI/2)
-		//.translate(new Vector3(-0.5,0,-0.5))
-		//.scale(new Vector3(4,4,4))
-		//.translate(new Vector3(0,-0.1,0))
-	//scene.addObject(p3)
 
 	const intensity = 0.75
 
