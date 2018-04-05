@@ -59,6 +59,7 @@ class Scene {
 				const diffuse = light.diffuse(point,normal).times(mat.diffuse).times(textureColor)
 				const specular = light.specular(point, normal, eye, mat.shininess).times(mat.specular)
 				theColor = theColor.add(ambient).add(diffuse).add(specular)//.add(textureColor)
+        //if (Math.random()<0.001) console.dir([theColor,ambient,diffuse,light.diffuse(point,normal),specular,point,normal, eye, mat,textureColor])
 			}
 		}
 		return theColor

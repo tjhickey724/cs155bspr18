@@ -51,4 +51,8 @@ class Vector3 {
   toString(){
   return "Vector3("+this.x+","+this.y+","+this.z+")";
   }
+
+	equals(that){
+		return this.subtract(that).length() < 0.0000001
+	}
 }

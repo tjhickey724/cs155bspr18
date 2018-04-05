@@ -3,7 +3,7 @@ class Object3D {
 	constructor(){
 		//this.position = new Vector3(0,0,0)
 		this.material = Material.WHITEMAT
-		this.transform = new Transform()
+		//this.transform = new Transform()
 	}
 
 	get position(){

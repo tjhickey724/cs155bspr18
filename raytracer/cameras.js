@@ -25,7 +25,12 @@ class Camera {
 		// I have to think about it some more...
 		const thispos = this.position
 		const zaxis = thispos.subtract(pos).normalize()
-		const xaxis = this.up.cross(zaxis).normalize()
+		let xaxis = this.up.cross(zaxis).normalize()
+		if (xaxis.length()<0.0001) {
+			// handle the case of looking straight up or down
+			const tempup = new Vector3(0,0,-1)
+			xaxis = tempup.cross(zaxis).normalize()
+		}
 		const yaxis = zaxis.cross(xaxis)
 
 		//console.dir(['xyz axes',xaxis,yaxis,zaxis])

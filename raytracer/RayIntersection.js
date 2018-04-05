@@ -22,8 +22,9 @@ class RayIntersection{
 
 	applyTransform(t){
 		const point1 = t.transformVec3(this.point)
-		const normal = t.inverse().transpose().transformVec3a(this.normal).normalize()
-		return new RayIntersection(this.object,point1,normal,this.uv)
+		const normal1 = t.inverse().transpose().transformVec3a(this.normal).normalize()
+		//if (Math.random()< 0.01) console.dir(['inaT',t,this.normal,normal1])
+		return new RayIntersection(this.object,point1,normal1,this.uv)
 	}
 
   isEmpty(){

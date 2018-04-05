@@ -12,7 +12,7 @@ class Sphere extends Object3D{
     this.center = new Vector3(0,0,0)
     this.radius = 1
 		this.material = new Material(Color.WHITE, Color.WHITE, Color.WHITE, 255)
-
+		this.transform = new Transform()
   }
 
   intersect(r){
@@ -30,16 +30,19 @@ class Sphere extends Object3D{
 
     if (d==0)
 			if (t1>0) {
-				const normal1 = p1.subtract(this.center).normalize();
+				let normal1 = p1.subtract(this.center).normalize();
+				if (normal1.dot(r.d)>0) normal1 = normal1.scale(-1)
 			    return new RayIntersection(this, p1,  normal1, this.uv(p1))
 			} else
           return RayIntersection.none()
 
     if (t1>0) {
-			const normal1 = p1.subtract(this.center).normalize();
+			let normal1 = p1.subtract(this.center).normalize();
+			if (normal1.dot(r.d)>0) normal1 = normal1.scale(-1)
       return new RayIntersection(this, p1,  normal1, this.uv(p1))
     }else if (t2>0){
-			const normal2 = p2.subtract(this.center).normalize();
+			let normal2 = p2.subtract(this.center).normalize();
+			if (normal2.dot(r.d)>0) normal2 = normal2.scale(-1)
       return new RayIntersection(this, p2, normal2, this.uv(p2))
     }else
       return RayIntersection.none()
@@ -61,24 +64,25 @@ class Sphere extends Object3D{
 class Plane extends Object3D {
   constructor(){
 		super()
+		this.origin = new Vector3(0,0,0)
     this.u=new Vector3(1,0,0)
     this.v=new Vector3(0,1,0)
     this.normal = this.u.cross(this.v).normalize()
 		this.material = new Material(Color.WHITE, Color.WHITE, Color.WHITE, 255)
-
+		this.transform = new Transform()
   }
 
   intersect(ray){
 		let n = this.normal
 		if (ray.d.dot(n)>0)
 		  n = n.scale(-1)  // can look at both sides of a plane
-    const t = this.position.subtract(ray.p).dot(n)/
+    const t = this.origin.subtract(ray.p).dot(n)/
               ray.d.dot(n)
 
     if (t>0){
       const point = ray.atTime(t)
 			//console.dir(['in Plane',this,point,this.uv(point)])
-      const ri = new RayIntersection(this, point, this.normal, this.uv(point))
+      const ri = new RayIntersection(this, point, n, this.uv(point))
 			//console.dir(ri)
 			return ri
     } else {
@@ -99,6 +103,7 @@ class Plane extends Object3D {
 class Square extends Plane {
 	constructor(){
 		super()
+		this.transform = new Transform()
 	}
 
 	intersect(ray){
@@ -115,5 +120,39 @@ class Square extends Plane {
 			//console.log(nothing)
 			return ri
 		}
+	 }
+}
+
+class Rectangle extends Plane {
+	constructor(w,h){
+		super()
+		this.transform = new Transform()
+		this.w=w
+		this.h=h
+	}
+
+	intersect(ray){
+		const ri = super.intersect(ray)
+		const p = ri.point
+		if (p==null) return ri
+		const pu = p.dot(this.u)
+		const pv = p.dot(this.v)
+		if (pu<0 || pu>this.w || pv<0 || pv>this.h){
+		 return RayIntersection.none()
+	  }
+		else {
+			//console.dir(['in Square',p,this.uv(p)])
+			//console.log(nothing)
+			return ri
+		}
+	 }
+
+	 toString(){
+		 const pos = this.transform.transformVec3(new Vector3(0,0,0))
+		 const u = this.transform.transformVec3(new Vector3(1,0,0))
+		 const v = this.transform.transformVec3(new Vector3(0,1,0))
+		 const ua = this.transform.transformVec3a(new Vector3(1,0,0))
+		 const va = this.transform.transformVec3a(new Vector3(0,1,0))
+		 return {pos,u,v,ua,va}
 	 }
 }

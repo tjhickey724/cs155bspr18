@@ -2,11 +2,12 @@
 
 texture1 = new Texture('/images/wood.jpg')
 texture2 = new Texture('/images/earth.jpg')
+document.getElementById('title').innerHTML="Demo1c"
 
 function runTest(){
 	canvas.width=900
 	canvas.height=900
-	const renderer = new Renderer(900,900)
+	const renderer = new Renderer(100,100)
 	const scene = new Scene('demo1c')
 
 	const mat1 = Material.standard()
@@ -28,50 +29,54 @@ function runTest(){
 	//const s2 = new Sphere(new Vector3(-50,0,-80),10)
 	const s0 = new Sphere()
 	s0.material = mat2
-	s0.scale(new Vector3(1,1,1))
+	s0
+	  //.translate(new Vector3(25,5,25))
+	  .scale(new Vector3(0.5,0.5,0.5))
 
 	scene.addObject(s0)
 
 	const s1 = new Sphere()
-	s1.translate(new Vector3(10,2,10))
-		.rotateY(-Math.PI*0.5)
-	  .scale(new Vector3(5,5,5))
 	s1.material=mat2
-	scene.addObject(s1)
+	s1
+		//.rotateY(-Math.PI*0.5)
+	  .translate(new Vector3(2,0,-2))
+	//s1.material=mat2
+  scene.addObject(s1)
 
 	const s2 = new Sphere()
 	s2.material = mat2
-	s2.translate(new Vector3(0,0,5))
-	  .scale(new Vector3(1,1,1))
+	s2.translate(new Vector3(25,5,40))
+	  .scale(new Vector3(5,5,5))
 
-	scene.addObject(s2)
-
-	const p1 = new Plane()
+	//scene.addObject(s2)
+	const g=8
+	const p1 = new Square()
 	p1.material = mat1
-	p1.rotateX(-1*Math.PI/2)
-	  .translate(new Vector3(0,0.05,0))
-		.scale(new Vector3(100,100,100))
+	p1.rotateX(Math.PI/2)
+	 // .translate(new Vector3(-30,-10,-50))
+		.scale(new Vector3(g,g,1))
+		.translate(new Vector3(-0.5,-0.5,0.5))
 
 
 
 	scene.addObject(p1)
 
 
-	const light1 = new Light(new Vector3(5,15,10))
-	light1.intensity = 1
+	const light1 = new Light(new Vector3(5,15,-10))
+	light1.intensity = 0.5
 	light1.diffuseColor = Color.WHITE
 	light1.specularColor = Color.RED
 	scene.addLight(light1)
 
-	const light2 = new Light(new Vector3(0,50,50))
-	light2.intensity = 1
+	const light2 = new Light(new Vector3(-2,1,2))
+	light2.intensity = 0.75
 	light2.diffuseColor = Color.WHITE
 	light2.specularColor = Color.BLUE
 	scene.addLight(light2)
 
 	const camera = new Camera()
-	camera.translate(new Vector3(-7,5,-7))
-	camera.lookAt(s1.position)
+	camera.translate(new Vector3(2,2,2))
+	camera.lookAt(s0.position)
 
 	renderer.render(scene,camera)
 }

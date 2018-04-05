@@ -1,13 +1,14 @@
 
 
 class Renderer {
-  constructor(w,h){
+  constructor(w,h,id){
     this.width = w
     this.height = h
+		this.id = id || 'canvas'
   }
 
   drawPixel(i,j,c){
-    var canvas = document.getElementById('canvas');
+    var canvas = document.getElementById(this.id);
     if (canvas.getContext) {
       var ctx = canvas.getContext('2d')
       ctx.fillStyle = c;
@@ -21,8 +22,8 @@ class Renderer {
 
   render(scene,camera){
     for(let i=0;i<this.width;i++){
-			document.getElementById('status').innerHTML= ""+i+"/"+this.width
-			if (i%1==0) console.log('rendered '+i+' of '+this.width)
+			//document.getElementById('status').innerHTML= ""+i+"/"+this.width
+			if (i%100==0) console.log('rendered '+i+' of '+this.width)
       for(let j=0; j<this.height; j++){
         const x = 2*i/this.width-1 // x goes from -1 to 1 in this.width steps
         const y = 2*j/this.height-1 // y goes from -1 to 1 in this.height steps
@@ -52,7 +53,9 @@ class Renderer {
 					if (mat.textureWeight>0){
 						//console.dir([intersection,obj,mat,uv])
 						textureColor = mat.texture.pixel(uv.u,uv.v)
+
 					}
+					//if (Math.random()>0.01) console.dir([i,j,textureColor])
 					let theColor = scene.calculateColor(p,n,e,mat,textureColor)
 					//theColor =Color.average(mat.textureWeight,textureColor,theColor)
 
