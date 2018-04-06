@@ -5,7 +5,7 @@ class Scene {
     this.name=name
     this.objects=[]
     this.lights=[]
-		this.globalAmbient = new Color(0.1,0.1,0.1)
+		this.globalAmbient = Color.BLACK //new Color(0.1,0.1,0.1)
   }
 
   addObject(x){
@@ -98,6 +98,7 @@ class Scene {
 	}
 
 	calculateColor(point, normal, eye, mat, textureColor){
+		if (mat.nolighting) return textureColor
 		let theColor= this.globalAmbient
 		for(let light of this.lights){
 			if (this.reaches(light, point)){

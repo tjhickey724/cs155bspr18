@@ -9,6 +9,7 @@ class Material{
 		this.texture='none'
 		this.textureWeight=0
 		this.reflectivity=0
+		this.nolighting = false
 	}
 
 	getColor(light){

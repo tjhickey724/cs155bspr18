@@ -3,11 +3,14 @@
 texture0 = new Texture('/images/wood.jpg')
 texture1 = new Texture('/images/sky.jpg')
 texture2 = new Texture('/images/earth.jpg')
+texture4 = new Texture('/images/seashore0.jpg')
 document.getElementById('title').innerHTML="demos/demo1f.js"
 
 function runTest(){
-	screenW=600
-	screenH=600
+	screenSize=900
+	renderSize=900
+	screenW=screenSize
+	screenH=screenSize
 	canvas1.width=screenW
 	canvas1.height=screenH
 	canvas2.width=screenW
@@ -16,8 +19,8 @@ function runTest(){
 	canvas3.height=screenH
 	canvas4.width=screenW
 	canvas4.height=screenH
-	imageW=100
-	imageH=100
+	imageW=renderSize
+	imageH=renderSize
 	const rendererFront = new Renderer(imageW,imageH,'canvas1')
 	const rendererRight = new Renderer(imageW,imageH,'canvas2')
 	const rendererTop = new Renderer(imageW,imageH, 'canvas3')
@@ -25,7 +28,7 @@ function runTest(){
 	rendererFront.depth=4
 	rendererRight.depth=4
 	rendererTop.depth=4
-	renderer.depth=4
+	renderer.depth=10
 	//const rendererCam = new Renderer(300,300, 'canvas4')
 	const cameraFront = new Camera()
 	const cameraRight = new Camera()
@@ -63,16 +66,31 @@ function runTest(){
   const mat3 = Material.standard()
 	mat3.reflectivity=1.0
 
+	const mat4 = Material.standard()
+	mat4.texture = texture4
+	mat4.nolighting = true
+	mat4.textureWeight = 0.5
+	mat4.texture.repeatU=1
+	mat4.texture.repeatV=1
+
 
 
 	//const s1 = new Sphere(new Vector3(-2,0,-80),20)
 	//const s2 = new Sphere(new Vector3(-50,0,-80),10)
 	const s0 = new Sphere()
-	s0.material = mat2
+	s0.material = mat3
 	//s0.scale(new Vector3(2,2,2))
   s0.translate(new Vector3(1,1,1))
 	//s0.translate(new Vector3(25,5,25)).scale(new Vector3(3,3,3))
 	scene.addObject(s0)
+
+	const skyBall = new Sphere()
+	skyBall.material = mat4
+	//s0.scale(new Vector3(2,2,2))
+	skyBall.rotateY(Math.PI/4)
+	skyBall.scale(new Vector3(1000,1000,1000))
+	//s0.translate(new Vector3(25,5,25)).scale(new Vector3(3,3,3))
+	scene.addObject(skyBall)
 
 	const w = 4
 	const h = 2
@@ -112,13 +130,13 @@ function runTest(){
 	const light1 = new Light(new Vector3(-10,10,10))
 	light1.intensity = intensity
 	light1.diffuseColor = Color.WHITE
-	light1.specularColor = Color.RED
+	//light1.specularColor = Color.RED
 	scene.addLight(light1)
 
 	const light2 = new Light(new Vector3(20,20,20))
 	light2.intensity = intensity
 	light2.diffuseColor = Color.WHITE
-	light2.specularColor = Color.BLUE
+	//light2.specularColor = Color.BLUE
 	scene.addLight(light2)
 
 
@@ -126,25 +144,25 @@ function runTest(){
 	const lightCam = new Light(camera.position)
 	lightCam.intensity = intensity
 	lightCam.diffuseColor = Color.WHITE
-	lightCam.specularColor = Color.BLUE
+	//lightCam.specularColor = Color.BLUE
 	//scene.addLight(lightCam)
 
 	const lightFront = new Light(cameraFront.position)
 	lightFront.intensity = intensity
 	lightFront.diffuseColor = Color.WHITE
-	lightFront.specularColor = Color.BLUE
+	//lightFront.specularColor = Color.BLUE
 	//scene.addLight(lightFront)
 
 	const lightTop = new Light(cameraTop.position)
 	lightTop.intensity = intensity
 	lightTop.diffuseColor = Color.WHITE
-	lightTop.specularColor = Color.BLUE
+	//lightTop.specularColor = Color.BLUE
 	//scene.addLight(lightTop)
 
 	const lightRight = new Light(cameraRight.position)
 	lightRight.intensity = intensity
 	lightRight.diffuseColor = Color.WHITE
-	lightRight.specularColor = Color.BLUE
+	//lightRight.specularColor = Color.BLUE
 	//scene.addLight(lightRight)
 
 	rendererFront.render(scene,cameraFront)
