@@ -2,12 +2,12 @@
 
 texture1 = new Texture('/images/wood.jpg')
 texture2 = new Texture('/images/earth.jpg')
-document.getElementById('title').innerHTML="Demo1c"
+document.getElementById('title').innerHTML="demos/demo1c"
 
 function runTest(){
 	canvas.width=900
 	canvas.height=900
-	const renderer = new Renderer(100,100)
+	const renderer = new Renderer(900,900)
 	const scene = new Scene('demo1c')
 
 	const mat1 = Material.standard()

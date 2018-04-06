@@ -5,6 +5,7 @@ class Scene {
     this.name=name
     this.objects=[]
     this.lights=[]
+		this.globalAmbient = new Color(0.1,0.1,0.1)
   }
 
   addObject(x){
@@ -97,15 +98,18 @@ class Scene {
 	}
 
 	calculateColor(point, normal, eye, mat, textureColor){
-		let theColor= new Color(0,0,0)
+		let theColor= this.globalAmbient
 		for(let light of this.lights){
 			if (this.reaches(light, point)){
 				const ambient = light.ambient().times(mat.ambient)
 				const diffuse = light.diffuse(point,normal).times(mat.diffuse).times(textureColor)
 				const specular = light.specular(point, normal, eye, mat.shininess).times(mat.specular)
-				theColor = theColor.add(ambient).add(diffuse).add(specular)//.add(textureColor)
-        //if (Math.random()<0.001) console.dir([theColor,ambient,diffuse,light.diffuse(point,normal),specular,point,normal, eye, mat,textureColor])
-			}
+				theColor =
+				   theColor
+						 .add(ambient)
+						 .add(diffuse)
+						 .add(specular)
+    	}
 		}
 		return theColor
 	}

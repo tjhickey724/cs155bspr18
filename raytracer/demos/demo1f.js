@@ -3,7 +3,7 @@
 texture0 = new Texture('/images/wood.jpg')
 texture1 = new Texture('/images/sky.jpg')
 texture2 = new Texture('/images/earth.jpg')
-document.getElementById('title').innerHTML="demo1f.js"
+document.getElementById('title').innerHTML="demos/demo1f.js"
 
 function runTest(){
 	screenW=600
@@ -16,8 +16,8 @@ function runTest(){
 	canvas3.height=screenH
 	canvas4.width=screenW
 	canvas4.height=screenH
-	imageW=600
-	imageH=600
+	imageW=100
+	imageH=100
 	const rendererFront = new Renderer(imageW,imageH,'canvas1')
 	const rendererRight = new Renderer(imageW,imageH,'canvas2')
 	const rendererTop = new Renderer(imageW,imageH, 'canvas3')

@@ -3,7 +3,7 @@ class Light{
 	constructor(position){
 		this.position = position
 		this.intensity = 1.0
-		this.ambientColor = Color.WHITE.scale(0.1)
+		this.ambientColor = Color.BLACK
 		this.diffuseColor = Color.WHITE
 		this.specularColor = Color.WHITE
 	}
