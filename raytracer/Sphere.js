@@ -8,11 +8,11 @@ and it relies on the Vector3 and Ray3 classes
 
 class Sphere extends Object3D{
   constructor(){
-		super()
+    super()
     this.center = new Vector3(0,0,0)
     this.radius = 1
-		this.material = new Material(Color.WHITE, Color.WHITE, Color.WHITE, 255)
-		this.transform = new Transform()
+    this.material = new Material(Color.WHITE, Color.WHITE, Color.WHITE, 255)
+    this.transform = new Transform()
   }
 
   intersect(r){
@@ -29,32 +29,32 @@ class Sphere extends Object3D{
     const p2 = r.atTime(t2);
 
     if (d==0)
-			if (t1>0) {
-				let normal1 = p1.subtract(this.center).normalize();
-				if (normal1.dot(r.d)>0) normal1 = normal1.scale(-1)
-			    return new RayIntersection(this, p1,  normal1, this.uv(p1))
-			} else
+      if (t1>0) {
+        let normal1 = p1.subtract(this.center).normalize();
+        if (normal1.dot(r.d)>0) normal1 = normal1.scale(-1)
+          return new RayIntersection(this, p1,  normal1, this.uv(p1))
+      } else
           return RayIntersection.none()
 
     if (t1>0) {
-			let normal1 = p1.subtract(this.center).normalize();
-			if (normal1.dot(r.d)>0) normal1 = normal1.scale(-1)
+      let normal1 = p1.subtract(this.center).normalize();
+      if (normal1.dot(r.d)>0) normal1 = normal1.scale(-1)
       return new RayIntersection(this, p1,  normal1, this.uv(p1))
     }else if (t2>0){
-			let normal2 = p2.subtract(this.center).normalize();
-			if (normal2.dot(r.d)>0) normal2 = normal2.scale(-1)
+      let normal2 = p2.subtract(this.center).normalize();
+      if (normal2.dot(r.d)>0) normal2 = normal2.scale(-1)
       return new RayIntersection(this, p2, normal2, this.uv(p2))
     }else
       return RayIntersection.none()
   }
 
-	uv(p){
-		// returns a uv coordinate for the point in [0,1]x[0,1]
-		// similar to latitude and longitude
-		const pc = p.subtract(this.center)
-		const phi = Math.asin(pc.y/this.radius)
-		const theta = Math.atan2(pc.z,pc.x)
-		return {u:1-(0.5*theta/Math.PI+0.5), v:(phi/Math.PI+0.5)}
-	}
+  uv(p){
+    // returns a uv coordinate for the point in [0,1]x[0,1]
+    // similar to latitude and longitude
+    const pc = p.subtract(this.center)
+    const phi = Math.asin(pc.y/this.radius)
+    const theta = Math.atan2(pc.z,pc.x)
+    return {u:1-(0.5*theta/Math.PI+0.5), v:(phi/Math.PI+0.5)}
+  }
 
 }

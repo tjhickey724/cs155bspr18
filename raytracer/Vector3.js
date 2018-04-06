@@ -42,17 +42,17 @@ class Vector3 {
     return Math.sqrt(this.dot(this))
   }
   normalize(){
-		const len = this.length()
-		if (len==0)
-			return this.scale(1)
-		else
-		  return this.scale(1/this.length())
+    const len = this.length()
+    if (len==0)
+      return this.scale(1)
+    else
+      return this.scale(1/this.length())
   }
   toString(){
   return "Vector3("+this.x+","+this.y+","+this.z+")";
   }
 
-	equals(that){
-		return this.subtract(that).length() < 0.0000001
-	}
+  equals(that){
+    return this.subtract(that).length() < 0.0000001
+  }
 }

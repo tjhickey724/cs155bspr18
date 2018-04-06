@@ -4,8 +4,8 @@ class Renderer {
   constructor(w,h,id){
     this.width = w
     this.height = h
-		this.id = id || 'canvas'
-		this.depth = 1
+    this.id = id || 'canvas'
+    this.depth = 1
   }
 
   drawPixel(i,j,c){
@@ -23,14 +23,14 @@ class Renderer {
 
   render(scene,camera){
     for(let i=0;i<this.width;i++){
-			//document.getElementById('status').innerHTML= ""+i+"/"+this.width
-			if (i%100==0) console.log('rendered '+i+' of '+this.width)
+      //document.getElementById('status').innerHTML= ""+i+"/"+this.width
+      if (i%100==0) console.log('rendered '+i+' of '+this.width)
       for(let j=0; j<this.height; j++){
         const x = 2*i/this.width-1 // x goes from -1 to 1 in this.width steps
         const y = 2*j/this.height-1 // y goes from -1 to 1 in this.height steps
         const r = camera.createRay(x,y) // this creates the ray for pixel (i,j)
-				const pixelColor = scene.getColorForRay(r,this.depth)
-				this.drawPixel(i,j,pixelColor.to255())
+        const pixelColor = scene.getColorForRay(r,this.depth)
+        this.drawPixel(i,j,pixelColor.to255())
       }
     }
   }
