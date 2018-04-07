@@ -3,12 +3,12 @@
 texture0 = new Texture('/images/wood.jpg')
 texture1 = new Texture('/images/sky.jpg')
 texture2 = new Texture('/images/earth.jpg')
-texture4 = new Texture('/images/seashore0.jpg')
+texture4 = new Texture('/images/green-hills-over-town.jpg')
 document.getElementById('title').innerHTML="demos/demo1f.js"
 
 function runTest(){
 	screenSize=900
-	renderSize=900
+	renderSize=1800
 	screenW=screenSize
 	screenH=screenSize
 	canvas1.width=screenW
@@ -25,10 +25,10 @@ function runTest(){
 	const rendererRight = new Renderer(imageW,imageH,'canvas2')
 	const rendererTop = new Renderer(imageW,imageH, 'canvas3')
 	const renderer = new Renderer(imageW,imageH, 'canvas4')
-	rendererFront.depth=4
-	rendererRight.depth=4
-	rendererTop.depth=4
-	renderer.depth=10
+	rendererFront.depth=1600
+	rendererRight.depth=1600
+	rendererTop.depth=1600
+	renderer.depth=1600
 	//const rendererCam = new Renderer(300,300, 'canvas4')
 	const cameraFront = new Camera()
 	const cameraRight = new Camera()
@@ -49,7 +49,7 @@ function runTest(){
 	mat0.textureWeight = 0.5
 	mat0.texture.repeatU=4
 	mat0.texture.repeatV=4
-	mat0.reflectivity=0.5
+	mat0.reflectivity=0.75
 
 	const mat1 = Material.standard()
 	mat1.texture = texture1
@@ -108,7 +108,7 @@ function runTest(){
 	const walls = new Group()
 
 	const back = new Square()
-	back.material=mat1
+	back.material=mat3
 	back.scale(new Vector3(w,h,1))
 	walls.addObject(back)
 
