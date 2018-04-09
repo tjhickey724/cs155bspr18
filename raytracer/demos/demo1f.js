@@ -8,7 +8,7 @@ document.getElementById('title').innerHTML="demos/demo1f.js"
 
 function runTest(){
 	screenSize=900
-	renderSize=1800
+	renderSize=100
 	screenW=screenSize
 	screenH=screenSize
 	canvas1.width=screenW
