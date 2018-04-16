@@ -3,8 +3,9 @@
 function runTest(){
 	canvas.width=900
 	canvas.height=900
-	const renderer = new Renderer(300,300)
+	const renderer = new Renderer(900,900)
 	const scene = new Scene('demo0')
+
 
 
 	const s1 = new Sphere()
@@ -15,7 +16,7 @@ function runTest(){
 	scene.addObject(s1)
 
 	s2 = new Rectangle(5,10)
-	s2.translate(new Vector3(2,2,-12))
+	s2.translate(new Vector3(0,-2,0))
 		.scale(new Vector3(3,4,2))
 	s2.material = new Material(Color.WHITE,Color.GREEN,Color.WHITE)
 	s2.material.shininess = 100
@@ -45,10 +46,13 @@ function runTest(){
 	light2.intensity = 0.5
 	light2.ambientColor = Color.WHITE.scale(0.1)
 	light2.diffuseColor = Color.WHITE
-	light2.specularColor = new Color(1,1,0)
+	light2.specularColor = new Color(1,0,0)
 	scene.addLight(light2)
 
-	renderer.render(scene,camera)
+  renderer.render(scene,camera)
+
+
 }
+console.log("running demo0")
 
 runTest()

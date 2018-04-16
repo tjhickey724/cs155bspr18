@@ -90,8 +90,15 @@ class Scene {
 
 
   reaches(light,point){
-    const lightdir = point.subtract(light.position);
-    const lightray = new Ray3(light.position,lightdir)
+    const dx = Math.random()-0.5;
+    const dy = Math.random()-0.5;
+    const dz = Math.random()-0.5;
+    const rayStart = light.position.add(new Vector3(dx,dy,dz))
+
+    //const lightdir = point.subtract(light.position);
+    //const lightray = new Ray3(light.position,lightdir)
+    const lightdir = point.subtract(rayStart);
+    const lightray = new Ray3(rayStart,lightdir)
     const ri = this.intersect(lightray);
     if (ri.point== null) return false
     return (ri.point.subtract(point).length()<0.01)
