@@ -89,11 +89,26 @@ class Scene {
   }
 
 
-  reaches(light,point){
+  reachesSoft(light,point){
+    let count=0
+    let limit = 10
+    for(let i=0; i<limit; i++){
+      if (this.reachesRand(light,point)){
+        count++
+      }
+    }
+    return count/limit
+  }
+
+
+
+  reachesRand(light,point){
     const dx = Math.random()-0.5;
     const dy = Math.random()-0.5;
     const dz = Math.random()-0.5;
-    const rayStart = light.position.add(new Vector3(dx,dy,dz))
+    const dp = new Vector3(dx,dy,dz)
+    const r = 5
+    const rayStart = light.position.add(dp.normalize().scale(r))
 
     //const lightdir = point.subtract(light.position);
     //const lightray = new Ray3(light.position,lightdir)
@@ -104,7 +119,22 @@ class Scene {
     return (ri.point.subtract(point).length()<0.01)
   }
 
+  reaches(light,point){
+    const lightdir = point.subtract(light.position);
+    const lightray = new Ray3(light.position,lightdir)
+    const ri = this.intersect(lightray);
+    if (ri.point== null) return false
+    return (ri.point.subtract(point).length()<0.01)
+  }
+
+  // by changing this method you can change the algorithm
+  // used to calculate shadows.. 
   calculateColor(point, normal, eye, mat, textureColor){
+    return this.calculateColor2(point, normal, eye, mat, textureColor)
+  }
+
+  // this is the original method without soft shadows
+  calculateColor0(point, normal, eye, mat, textureColor){
     if (mat.nolighting) return textureColor
     let theColor= this.globalAmbient
     for(let light of this.lights){
@@ -122,5 +152,65 @@ class Scene {
     return theColor
   }
 
+  // this one estimates how much of the light reaches the point
+  calculateColor1(point, normal, eye, mat, textureColor){
+    if (mat.nolighting) return textureColor
+    let theColor= this.globalAmbient
+    for(let light of this.lights){
+      let softShadow = this.reachesSoft(light,point)
+      if (softShadow > 0){
+        const ambient = light.ambient().times(mat.ambient)
+        const diffuse = light.diffuse(point,normal).times(mat.diffuse).times(textureColor)
+        const specular = light.specular(point, normal, eye, mat.shininess).times(mat.specular)
+        let softColor = ambient.add(diffuse).add(specular).scale(softShadow)
+        theColor = theColor.add(softColor)
+      }
+    }
+    return theColor
+  }
 
+  // this one makes N copies of each light
+  // all randomly distributed around the center of the light
+  calculateColor2(point, normal, eye, mat, textureColor){
+    if (mat.nolighting) return textureColor
+    let theColor= this.globalAmbient
+
+    for(let light of this.lights){
+      let softDist=light.softDist
+      let softN = light.softN
+      for(let i=0; i<softN;i++){
+        let softPoint = softPoints[i]
+        let light0 = light.clone().translate(softPoint.scale(softDist))
+        if (this.reaches(light0,point)){
+          let lightColor = Color.BLACK
+          const ambient = light0.ambient().times(mat.ambient)
+          const diffuse = light0.diffuse(point,normal).times(mat.diffuse).times(textureColor)
+          const specular = light0.specular(point, normal, eye, mat.shininess).times(mat.specular)
+          lightColor = lightColor.add(ambient).add(diffuse).add(specular)
+          lightColor = lightColor.scale(1/softN)
+          theColor = theColor.add(lightColor)
+        }
+      }
+    }
+    //if (Math.random()<0.001) console.dir(theColor.scale(1/softNum))
+    return theColor
+  }
+
+
+
+
+
+}
+
+function randPoint(){
+  const dx = Math.random()-0.5;
+  const dy = Math.random()-0.5;
+  const dz = Math.random()-0.5;
+  const dp = new Vector3(dx,dy,dz).normalize()
+  return dp
+}
+
+let softPoints = [new Vector3(0,0,0)]
+for(let i=0; i<1000; i++) {
+  softPoints.push(randPoint())
 }

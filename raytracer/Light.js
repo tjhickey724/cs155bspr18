@@ -6,6 +6,8 @@ class Light{
     this.ambientColor = Color.BLACK
     this.diffuseColor = Color.WHITE
     this.specularColor = Color.WHITE
+    this.softN=1
+    this.softDist=0
   }
 
   ambient(){
@@ -59,5 +61,19 @@ class Light{
 
   specular(point,normal,eye, shininess){
     return this.specularBlinnPhong(point,normal,eye, shininess)
+  }
+
+  translate(point){
+    this.position = this.position.add(point)
+    return this
+  }
+
+  clone(){
+    const light = new Light(this.position)
+    light.intensity = this.intensity
+    light.ambientColor = this.ambientColor
+    light.diffuseColor = this.diffuseColor
+    light.specularColor = this.specularColor
+    return light
   }
 }

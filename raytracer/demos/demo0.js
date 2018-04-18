@@ -1,9 +1,11 @@
 
 
 function runTest(){
-	canvas.width=900
-	canvas.height=900
-	const renderer = new Renderer(900,900)
+  canvasSize=1600
+  imageSize = 1600
+	canvas.width=canvasSize
+	canvas.height=canvasSize
+	const renderer = new Renderer(imageSize,imageSize)
 	const scene = new Scene('demo0')
 
 
@@ -11,13 +13,14 @@ function runTest(){
 	const s1 = new Sphere()
 	s1.material = new Material(Color.WHITE,Color.WHITE,Color.WHITE)
 	s1.material.shininess = 100
-	s1.translate(new Vector3(0,5,0))
+	s1.translate(new Vector3(0,0,0))
 		.scale(new Vector3(3,3,3))
 	scene.addObject(s1)
 
-	s2 = new Rectangle(5,10)
-	s2.translate(new Vector3(0,-2,0))
-		.scale(new Vector3(3,4,2))
+	s2 = new Rectangle(50,50)
+	s2.translate(new Vector3(-25,-3,25))
+    .rotateX(-Math.PI/2)
+		//.scale(new Vector3(4,4,4))
 	s2.material = new Material(Color.WHITE,Color.GREEN,Color.WHITE)
 	s2.material.shininess = 100
   s2.material.reflectivity = 0.5
@@ -27,26 +30,30 @@ function runTest(){
 	s3.translate(new Vector3(-10,5,-12)).scale(new Vector3(3,3,3))
 	s3.material = new Material(Color.WHITE,Color.WHITE,Color.WHITE)
 	s3.material.shininess = 100
-	scene.addObject(s3)
+	//scene.addObject(s3)
 
 	const camera = new Camera()
-	camera.translate(new Vector3(12,0,8))
+	camera.translate(new Vector3(6,5,4))
 	//camera.transform = camera.transform.rotateX(-30*Math.PI/180)
 	//camera.position = new Vector3(0,20,10)
-	camera.lookAt(s3.position)
+	camera.lookAt(s1.position)
 
 	const light1 = new Light(new Vector3(10,10,-15))
 	light1.ambientColor = Color.WHITE.scale(0.1)
 	light1.diffuseColor = Color.WHITE
 	light1.specularColor = Color.RED
 	light1.intensity = 0.5
+  light1.softN=500
+  light1.softDist = 2
 	scene.addLight(light1)
 
 	const light2 = new Light(new Vector3(0,30,20))
 	light2.intensity = 0.5
 	light2.ambientColor = Color.WHITE.scale(0.1)
 	light2.diffuseColor = Color.WHITE
-	light2.specularColor = new Color(1,0,0)
+	light2.specularColor = new Color(0,0,1)
+  light2.softN=500
+  light2.softDist=2
 	scene.addLight(light2)
 
   renderer.render(scene,camera)

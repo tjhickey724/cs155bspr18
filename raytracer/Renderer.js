@@ -24,7 +24,7 @@ class Renderer {
   render(scene,camera){
     for(let i=0;i<this.width;i++){
       //document.getElementById('status').innerHTML= ""+i+"/"+this.width
-      if (i%100==0) console.log('rendered '+i+' of '+this.width)
+      if (i%10==0) console.log('rendered '+i+' of '+this.width)
       for(let j=0; j<this.height; j++){
         const x = 2*i/this.width-1 // x goes from -1 to 1 in this.width steps
         const y = 2*j/this.height-1 // y goes from -1 to 1 in this.height steps
