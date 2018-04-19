@@ -6,6 +6,7 @@ class Light{
     this.ambientColor = Color.BLACK
     this.diffuseColor = Color.WHITE
     this.specularColor = Color.WHITE
+    // these two parameters are used for the soft shadows
     this.softN=1
     this.softDist=0
   }
