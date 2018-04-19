@@ -3,7 +3,7 @@
 function runTest(){
 	canvas.width=900
 	canvas.height=900
-	const renderer = new Renderer(900,900)
+	const renderer = new Renderer(300,300)
 	const scene = new Scene('demo1')
 	const camera = new Camera()
 
