@@ -2,7 +2,7 @@
 
 texture1 = new Texture('/images/wood.jpg')
 texture2 = new Texture('/images/earth.jpg')
-document.getElementById('title').innerHTML="demos/demo1c"
+document.getElementById('title').innerHTML="demos/pa04a"
 
 function runTest(){
 	canvas.width=900
