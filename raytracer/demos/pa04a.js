@@ -8,7 +8,8 @@ function runTest(){
 	canvas.width=900
 	canvas.height=900
 	const renderer = new Renderer(300,300)
-	const scene = new Scene('demo1c')
+	const scene = new Scene('pa04a')
+
 
 	const mat1 = Material.standard()
 	mat1.texture = texture1

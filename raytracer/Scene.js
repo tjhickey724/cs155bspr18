@@ -112,7 +112,12 @@ class Scene {
              .add(specular)
       }
     }
-    return theColor
+
+    if (Math.random()<0.001){
+      console.dir([point,normal,eye,mat,textureColor])
+    }
+
+    return theColor.add(new Color(0.1,0,0))
   }
 
 
